@@ -19,7 +19,10 @@
     "type": "git",
     "url": "git+https://github.com/gabrielmoreira/riot-router.git"
   },
-  "author": "",
+  "engines": {
+    "iojs": "~2.2.1"
+  },
+  "author": "Gabriel Moreira",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/gabrielmoreira/riot-router/issues"
