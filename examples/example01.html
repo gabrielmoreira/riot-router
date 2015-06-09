@@ -62,7 +62,7 @@
               </thead>
               <tbody>
                 <tr class={active: riot.router.current.params.userId === '123'}>
-                  <td><a href="#/users/user/123">John</a></td>
+                  <td><a href="#/u/123">John (Redirect)</a></td>
                   <td>123</td>
                 </tr>
                 <tr class={active: riot.router.current.params.userId === '456'}>
@@ -104,7 +104,7 @@
   </script>
   <script src="//cdn.jsdelivr.net/riot/2.1/riot.min.js"></script>
   <script src="//cdn.jsdelivr.net/riot/2.1/compiler.min.js"></script>
-  <script src="../lib/router.min.js"></script>
+  <script src="../lib/router.js"></script>
   <script>
     riot.mount('*');
 
@@ -124,7 +124,7 @@
            new NotFoundRoute({tag: 'not-found'})
          ]),
         new NotFoundRoute({tag: 'not-found'}),
-        new RedirectRoute({from: 'company', to: 'about'})
+        new RedirectRoute({from: 'u', to: 'users/user'})
       ])
     );
     riot.router.start();

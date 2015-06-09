@@ -1,4 +1,5 @@
 var riot = require('riot');  
+var error = console && console.error || function() {};
 
 class Router {
   constructor() {
@@ -77,10 +78,10 @@ class Route extends Handler {
     this.path = options.path;
     this.name = options.name;
     this.pathParameterNames = [];
-    this.pattern = "/?" + (this.path || this.name || "").replace(/^\//,"").replace(/:([^/]+)/, function(ignored, group) {
+    this.pattern = "^/?" + (this.path || this.name || "").replace(/^\//,"").replace(/:([^/]+)/, function(ignored, group) {
       this.pathParameterNames.push(group);
       return "([^/]+)";
-    }.bind(this)) + "(/|$)";
+    }.bind(this)) + "(:?/|$)";
     this.regex = new RegExp(this.pattern);
   }
 
@@ -91,8 +92,8 @@ class Route extends Handler {
     var otherRoutes = routes.filter(function(r) { return redirectRoutes.indexOf(r) === -1 
                                                       &&  defaultRoutes.indexOf(r) === -1
                                                       && notFoundRoutes.indexOf(r) === -1; });
-    if (notFoundRoutes.length > 1) console.error("Can't use more than one NotFoundRoute per route. --> " + (this.name || this.path || this.tag));
-    if (defaultRoutes.length > 1) console.error("Can't use more than one DefaultRoute per route. --> " + (this.name || this.path || this.tag));     this._routes = [].concat(redirectRoutes).concat(otherRoutes).concat(defaultRoutes).concat(notFoundRoutes);
+    if (notFoundRoutes.length > 1) error("Can't use more than one NotFoundRoute per route. --> " + (this.name || this.path || this.tag));
+    if (defaultRoutes.length > 1) error("Can't use more than one DefaultRoute per route. --> " + (this.name || this.path || this.tag)); this._routes = [].concat(redirectRoutes).concat(otherRoutes).concat(defaultRoutes).concat(notFoundRoutes);
     return this;
   }
 
@@ -125,6 +126,7 @@ class RouteChildRequest {
     this.request = request;
     this.matcher = matcher;
     this.uri = this.request.uri.substring(matcher.found.length);
+    this.parentUri = this.request.uri.substring(0, matcher.found.length);
   }
 }
 
@@ -140,6 +142,26 @@ class NotFoundRoute extends Handler {
 }
 
 class RedirectRoute extends Handler {
+  
+  constructor(options) {
+    super(options);
+    options = options || {};
+    this.from = options.from;
+    this.to = options.to;
+    this.pattern = "(^/?)" + this.from + "(/|$)";
+    this.regex = new RegExp(this.pattern);
+  }
+  
+  process(request, response) {
+    var uri = request.uri.replace(this.regex, "$1" + this.to + "$2");
+    if (uri !== request.uri) {
+      var matcher = this.regex.exec(request.uri);
+      var parent = request.parentUri || "";
+      response.uri = parent + uri;
+      request.uri = uri;
+    }
+  }
+  
 }
 
 class DefaultRoute extends Handler {
