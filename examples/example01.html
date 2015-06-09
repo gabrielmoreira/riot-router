@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <title>example</title>
   <link rel="stylesheet" href="//cdn.jsdelivr.net/semantic-ui/1.12/semantic.min.css">
-  <script src="//cdn.jsdelivr.net/babel/5.5/browser.js"></script>
   <style>
     .ui.grid.app {
       margin-left: 20%;
@@ -24,7 +23,6 @@
 <body>
   <app/>
 
-  <script src="src/router.js" type="text/babel"></script>
   <script type="riot/tag">
     <app>
       <main-menu/>
@@ -106,10 +104,14 @@
   </script>
   <script src="//cdn.jsdelivr.net/riot/2.1/riot.min.js"></script>
   <script src="//cdn.jsdelivr.net/riot/2.1/compiler.min.js"></script>
-  <script type="text/babel">
+  <script src="../lib/router.min.js"></script>
+  <script>
     riot.mount('*');
 
-    var {Route, DefaultRoute, NotFoundRoute, RedirectRoute} = riot.router;
+    var Route = riot.router.Route, 
+        DefaultRoute = riot.router.DefaultRoute, 
+        NotFoundRoute = riot.router.NotFoundRoute, 
+        RedirectRoute = riot.router.RedirectRoute;
 
     riot.router.route(
       new Route().routes([
@@ -125,7 +127,6 @@
         new RedirectRoute({from: 'company', to: 'about'})
       ])
     );
-
     riot.router.start();
   </script>
 </body>

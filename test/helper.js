@@ -16,8 +16,7 @@ var riot = require('riot');
   
 })(global);
 
-require('../router.js');
-
+require('../lib/router.js');
 
 module.exports = {
   riot: riot,
