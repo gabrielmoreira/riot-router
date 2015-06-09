@@ -1,0 +1,28 @@
+{
+  "name": "riot-router",
+  "version": "0.3.0",
+  "description": "A routing solution for Riot",
+  "main": "router.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "^2.2.5",
+    "riot": "^2.1.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabrielmoreira/riot-router.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gabrielmoreira/riot-router/issues"
+  },
+  "homepage": "https://github.com/gabrielmoreira/riot-router#readme"
+}
