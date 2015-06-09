@@ -15,6 +15,11 @@ This library is written with CommonJS modules. If you are using
 browserify, webpack, or similar, you can consume it like anything else
 installed from npm.
 
+See a demo
+-------------
+
+[Application example](http://gabrielmoreira.github.io/riot-router/examples/example-01.html)
+
 What's it look like?
 --------------------
 
