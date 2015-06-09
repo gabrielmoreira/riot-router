@@ -2,7 +2,7 @@
 [![build status](https://img.shields.io/travis/gabrielmoreira/riot-router/master.svg?style=flat-square)](https://travis-ci.org/gabrielmoreira/riot-router)
 [![dependency status](https://img.shields.io/david/gabrielmoreira/riot-router.svg?style=flat-square)](https://david-dm.org/gabrielmoreira/riot-router)
 
-A complete routing library for Riot.
+A routing library for Riot.
 
 Installation
 ------------
@@ -39,7 +39,6 @@ What's it look like?
     ])
   );
   riot.router.start();
-);
 ```
 
 Thanks, React-Router
