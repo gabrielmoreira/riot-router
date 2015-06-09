@@ -93,7 +93,8 @@ class Route extends Handler {
                                                       &&  defaultRoutes.indexOf(r) === -1
                                                       && notFoundRoutes.indexOf(r) === -1; });
     if (notFoundRoutes.length > 1) error("Can't use more than one NotFoundRoute per route. --> " + (this.name || this.path || this.tag));
-    if (defaultRoutes.length > 1) error("Can't use more than one DefaultRoute per route. --> " + (this.name || this.path || this.tag)); this._routes = [].concat(redirectRoutes).concat(otherRoutes).concat(defaultRoutes).concat(notFoundRoutes);
+    if (defaultRoutes.length > 1) error("Can't use more than one DefaultRoute per route. --> " + (this.name || this.path || this.tag));
+    this._routes = [].concat(redirectRoutes).concat(otherRoutes).concat(defaultRoutes).concat(notFoundRoutes);
     return this;
   }
 
