@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Riot App Example 01</title>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/semantic-ui/1.12/semantic.min.css">
+  <style>
+    .ui.grid.app {
+      margin-left: 20%;
+      margin-right: 5%;
+    }
+    .ui.menu.main {
+      margin-left: 10px;
+      margin-top: 30px;
+    }
+    .app-content {
+      margin-top: 14px;
+      display: block;
+    }
+    
+  </style>
+</head>
+<body>
+  <app/>
+
+  <script type="riot/tag">
+    <!-- Application -->
+    <app>
+      <main-menu/>
+      <div class="pusher">
+        <div class="ui grid app">
+          <div class="column">
+            <route class="app-content"/>
+          </div>
+        </div>
+      </div>
+    </app>
+    
+    <!-- Main menu -->
+    <main-menu class="ui left floated vertical pointing menu main">
+      <a class={item: true, active: menu.url.substring(1) === riot.router.current.uri} href="{menu.url}" each={menu in this.menus}><i class="{menu.icon} icon" if={menu.icon}></i>{menu.text}</a>
+      
+      this.menus = [
+        {url: '#/', text: 'Home', icon: 'home'},
+        {url: '#/about', text:'About', icon: 'info'},
+        {url: '#/users', text:'Users', icon: 'users'},
+        {url: '#/users/user/123', text: 'User #123', icon: 'user'},
+        {url: '#/users/user/456', text: 'User #456', icon: 'user'}
+      ];
+      
+      // On route update, update this fragment.
+      riot.router.on('route:updated', this.update.bind(this));
+    </main-menu>
+    
+    <!-- Users page -->
+    <users>
+      <div class="ui stackable grid">
+        <div class="six wide column ">
+          <div class="ui segment">
+            <table class="ui very basic table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Id</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class={active: riot.router.current.params.userId === '123'}>
+                  <td><a href="#/u/123">John (Redirect)</a></td>
+                  <td>123</td>
+                </tr>
+                <tr class={active: riot.router.current.params.userId === '456'}>
+                  <td><a href="#/users/user/456">Mark</a></td>
+                  <td>456</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="ten wide column">
+          <route/>
+        </div>
+        </div>
+      </div>
+    </users>
+    
+    <!-- User detail page fragment -->
+    <user>
+      <div class="ui segment">
+        <div if={opts.userId === '123'}>123 - John</div>
+        <div if={opts.userId === '456'}>456 - Mark</div>
+      </div>
+    </user>
+    
+    <!-- About page -->
+    <about>
+      <div class="ui segment">About!</div>
+    </about>
+    
+    <!-- Home page -->
+    <home>
+      <div class="ui segment">Home!</div>
+    </home>
+    
+    <!-- Users default page fragment -->
+    <users-home>
+    </users-home>
+    
+    <!-- Not found page -->
+    <not-found>
+      <div class="ui segment">Page '{riot.router.current.uri}' not found! </div>
+    </not-found>
+  </script>
+  <script src="node_modules/riot/riot+compiler.min.js"></script>
+  <script src="node_modules/riot-router/lib/router.js"></script>
+  <script>
+    riot.mount('*');
+    var Route = riot.router.Route, 
+        DefaultRoute = riot.router.DefaultRoute, 
+        NotFoundRoute = riot.router.NotFoundRoute, 
+        RedirectRoute = riot.router.RedirectRoute;
+    riot.router.route(
+      new Route().routes([
+        new DefaultRoute({tag: 'home'}),
+        new Route({name: 'about', tag: 'about'}),
+        new Route({name: 'users', tag: 'users'}).routes([
+           new Route({name: 'recent-users', path:'recent', tag: 'recent-users'}),
+           new Route({name: 'user', path: '/user/:userId', tag: 'user'}),
+           new DefaultRoute({tag: 'users-home'}),
+           new NotFoundRoute({tag: 'not-found'})
+         ]),
+        new NotFoundRoute({tag: 'not-found'}),
+        new RedirectRoute({from: 'u', to: 'users/user'})
+      ])
+    );
+    riot.router.start();
+  </script>
+</body>
+</html>

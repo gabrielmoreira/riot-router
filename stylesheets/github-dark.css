@@ -21,12 +21,12 @@
 
 .pl-c1      /* constant, markup.raw, meta.diff.header, meta.module-reference, meta.property-name, support, support.constant, support.variable, variable.other.constant */,
 .pl-s .pl-v /* string variable */ {
-  color: #0099cd;
+  color: #8be9fd;
 }
 
 .pl-e  /* entity */,
 .pl-en /* entity.name */ {
-  color: #9774cb;
+  color: #72C05D;
 }
 
 .pl-s .pl-s1 /* string source */,
@@ -39,7 +39,7 @@
 }
 
 .pl-k /* keyword, storage, storage.type */ {
-  color: #cc2372;
+  color: #ff6541;
 }
 
 .pl-pds              /* punctuation.definition.string, string.regexp.character-class */,
@@ -49,7 +49,7 @@
 .pl-sr .pl-cce       /* string.regexp constant.character.escape */,
 .pl-sr .pl-sra       /* string.regexp string.regexp.arbitrary-repitition */,
 .pl-sr .pl-sre       /* string.regexp source.ruby.embedded */ {
-  color: #3c66e2;
+  color: #E6DB74;
 }
 
 .pl-v /* variable */ {

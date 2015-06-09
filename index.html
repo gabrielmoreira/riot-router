@@ -10,7 +10,7 @@
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>Riot-router by gabrielmoreira</title>
+    <title>Riot-Router by gabrielmoreira</title>
   </head>
 
   <body>
@@ -18,8 +18,8 @@
       <div class="inner">
 
         <header>
-          <h1>Riot-router</h1>
-          <h2>A routing solution for Riot</h2>
+          <h1>Riot-Router</h1>
+          <h2>A simple routing solution for Riot</h2>
         </header>
 
         <section id="downloads" class="clearfix">
@@ -35,8 +35,6 @@
 <a href="https://travis-ci.org/gabrielmoreira/riot-router"><img src="https://img.shields.io/travis/gabrielmoreira/riot-router/master.svg?style=flat-square" alt="build status"></a>
 <a href="https://david-dm.org/gabrielmoreira/riot-router"><img src="https://img.shields.io/david/gabrielmoreira/riot-router.svg?style=flat-square" alt="dependency status"></a></p>
 
-<p>A routing library for Riot.</p>
-
 <h2>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
 
@@ -45,7 +43,12 @@
 <p>This library is written with CommonJS modules. If you are using
 browserify, webpack, or similar, you can consume it like anything else
 installed from npm.</p>
-
+          
+<h2>Examples</h2>
+<a href="examples/example-01.html">Application example</a>
+<br/>
+          <br/>
+          
 <h2>
 <a id="whats-it-look-like" class="anchor" href="#whats-it-look-like" aria-hidden="true"><span class="octicon octicon-link"></span></a>What's it look like?</h2>
 
@@ -69,7 +72,14 @@ installed from npm.</p>
     ])
   );
   riot.router.<span class="pl-c1">start</span>();</pre></div>
+          
+<h2>
+<a id="mounting-routes" class="anchor" href="#mounting-routes" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to mount my route?</h2>
+<div class="highlight hightlight-html"><pre>&lt;route/&gt;
 
+riot.mount('*');
+</pre></div>
+          
 <h2>
 <a id="thanks-react-router" class="anchor" href="#thanks-react-router" aria-hidden="true"><span class="octicon octicon-link"></span></a>Thanks, React-Router</h2>
 
