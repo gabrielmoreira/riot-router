@@ -13,6 +13,10 @@ class Router {
   route(handler) {
     this.handler = handler;
   }
+  
+  routes(routes) {
+    this.route(new Route().routes(routes));
+  }
 
   process(request) {
     var response = new Response(request);

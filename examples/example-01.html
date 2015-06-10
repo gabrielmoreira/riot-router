@@ -40,10 +40,10 @@
       
       this.menus = [
         {url: '#/', text: 'Home', icon: 'home'},
-        {url: '#/about', text:'About'},
-        {url: '#/users', text:'Users'},
-        {url: '#/users/user/123', text:'User #123'},
-        {url: '#/users/user/456', text:'User #456'}
+        {url: '#/about', text:'About', icon: 'info'},
+        {url: '#/users', text:'Users', icon: 'users'},
+        {url: '#/users/user/123', text:'User #123', icon: 'user'},
+        {url: '#/users/user/456', text:'User #456', icon: 'user'}
       ];
       
       riot.router.on('route:updated', this.update.bind(this));
@@ -113,20 +113,19 @@
         NotFoundRoute = riot.router.NotFoundRoute, 
         RedirectRoute = riot.router.RedirectRoute;
 
-    riot.router.route(
-      new Route().routes([
-        new DefaultRoute({tag: 'home'}),
-        new Route({name: 'about', tag: 'about'}),
-        new Route({name: 'users', tag: 'users'}).routes([
-           new Route({name: 'recent-users', path:'recent', tag: 'recent-users'}),
-           new Route({name: 'user', path: '/user/:userId', tag: 'user'}),
-           new DefaultRoute({tag: 'users-home'}),
-           new NotFoundRoute({tag: 'not-found'})
-         ]),
-        new NotFoundRoute({tag: 'not-found'}),
-        new RedirectRoute({from: 'u', to: 'users/user'})
-      ])
-    );
+    riot.router.routes([
+      new DefaultRoute({tag: 'home'}),
+      new Route({name: 'about', tag: 'about'}),
+      new Route({name: 'users', tag: 'users'}).routes([
+         new Route({name: 'recent-users', path:'recent', tag: 'recent-users'}),
+         new Route({name: 'user', path: '/user/:userId', tag: 'user'}),
+         new DefaultRoute({tag: 'users-home'}),
+         new NotFoundRoute({tag: 'not-found'})
+       ]),
+      new NotFoundRoute({tag: 'not-found'}),
+      new RedirectRoute({from: 'company', to: 'about'}),
+      new RedirectRoute({from: 'u', to: 'users/user'})
+    ]);
     riot.router.start();
   </script>
 </body>

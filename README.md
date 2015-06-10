@@ -29,20 +29,19 @@ What's it look like?
       NotFoundRoute = riot.router.NotFoundRoute, 
       RedirectRoute = riot.router.RedirectRoute;
 
-  riot.router.route(
-    new Route().routes([
-      new DefaultRoute({tag: 'home'}),
-      new Route({name: 'about', tag: 'about'}),
-      new Route({name: 'users', tag: 'users'}).routes([
-         new Route({name: 'recent-users', path:'recent', tag: 'recent-users'}),
-         new Route({name: 'user', path: '/user/:userId', tag: 'user'}),
-         new DefaultRoute({tag: 'users-home'}),
-         new NotFoundRoute({tag: 'not-found'})
-       ]),
-      new NotFoundRoute({tag: 'not-found'}),
-      new RedirectRoute({from: 'company', to: 'about'})
-    ])
-  );
+  riot.router.routes([
+    new DefaultRoute({tag: 'home'}),
+    new Route({name: 'about', tag: 'about'}),
+    new Route({name: 'users', tag: 'users'}).routes([
+       new Route({name: 'recent-users', path:'recent', tag: 'recent-users'}),
+       new Route({name: 'user', path: '/user/:userId', tag: 'user'}),
+       new DefaultRoute({tag: 'users-home'}),
+       new NotFoundRoute({tag: 'not-found'})
+     ]),
+    new NotFoundRoute({tag: 'not-found'}),
+    new RedirectRoute({from: 'company', to: 'about'}),
+    new RedirectRoute({from: 'u', to: 'users/user'})
+  ]);
   riot.router.start();
 ```
 
