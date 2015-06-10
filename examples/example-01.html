@@ -5,17 +5,40 @@
   <title>Riot App Example 01</title>
   <link rel="stylesheet" href="//cdn.jsdelivr.net/semantic-ui/1.12/semantic.min.css">
   <style>
-    .ui.grid.app {
-      margin-left: 20%;
-      margin-right: 5%;
+    app {
+      display: block;
+      background-color: #FFFFFF;
+      margin: 0 auto;
+      box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.05);
+      border-left: 1px solid #DDDDDD;
+      border-right: 1px solid #DDDDDD;
+      border-bottom: 1px solid #DDDDDD;
+      min-height: 400px;
     }
-    .ui.menu.main {
-      margin-left: 10px;
-      margin-top: 30px;
+    
+    app {
+      position: relative;
+      width: 915px;
+      margin: 0px auto;
+    }
+    @media only screen and (min-width: 1355px) {
+      app {
+        width: 850px;
+      }
+    }
+    @media only screen and (min-width: 998px) {
+      app {
+        right: 110px;
+      }
+    }
+    
+    .main.menu {
+      display: block;
+      border-radius: 0;
     }
     .app-content {
-      margin-top: 14px;
       display: block;
+      padding: 2em 2em 7em;
     }
     
   </style>
@@ -25,19 +48,13 @@
 
   <script type="riot/tag">
     <!-- Application -->
-    <app>
+    <app class="app">
       <main-menu/>
-      <div class="pusher">
-        <div class="ui grid app">
-          <div class="column">
-            <route class="app-content"/>
-          </div>
-        </div>
-      </div>
+      <route class="app-content"/>
     </app>
     
     <!-- Main menu -->
-    <main-menu class="ui left floated vertical pointing menu main">
+    <main-menu class="ui menu teal inverted main">
       <a class={item: true, active: menu.url.substring(1) === riot.router.current.uri} href="{menu.url}" each={menu in this.menus}><i class="{menu.icon} icon" if={menu.icon}></i>{menu.text}</a>
       
       this.menus = [
@@ -54,34 +71,43 @@
     
     <!-- Users page -->
     <users>
-      <div class="ui stackable grid">
-        <div class="six wide column ">
+      <div class="ui grid">
+        <div class="{userId ? 'six' : 'sixteen'} wide column">
           <div class="ui segment">
             <table class="ui very basic table">
               <thead>
                 <tr>
                   <th>Name</th>
                   <th>Id</th>
+                  <th if={!userId}>Email</th>
                 </tr>
               </thead>
               <tbody>
-                <tr class={active: riot.router.current.params.userId === '123'}>
+                <tr class={active: userId === '123'}>
                   <td><a href="#/u/123">John (Redirect)</a></td>
                   <td>123</td>
+                  <td if={!userId}>john@gmail.com</td>
                 </tr>
-                <tr class={active: riot.router.current.params.userId === '456'}>
+                <tr class={active: userId === '456'}>
                   <td><a href="#/users/user/456">Mark</a></td>
                   <td>456</td>
+                  <td if={!userId}>mark@gmail.com</td>
+                </tr>
+                <tr class={active: userId === '789'}>
+                  <td><a href="#/users/user/789">Gabriel</a></td>
+                  <td>456</td>
+                  <td if={!userId}>gabriel@gmail.com</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
-        <div class="ten wide column">
-          <route/>
-        </div>
-        </div>
+        <route class="ten wide column" if={userId}/>
       </div>
+      
+      this.on('update', function() {
+        this.userId = riot.router.current.params.userId;
+      }.bind(this));
     </users>
     
     <!-- User detail page fragment -->
@@ -89,17 +115,21 @@
       <div class="ui segment">
         <div if={opts.userId === '123'}>123 - John</div>
         <div if={opts.userId === '456'}>456 - Mark</div>
+        <div if={opts.userId === '789'}>789 - Gabriel</div>
       </div>
     </user>
     
     <!-- About page -->
     <about>
-      <div class="ui segment">About!</div>
+      <div class="ui segment">
+        <h2>About your company</h2>
+        <a href="#/company">Old link</a>
+      </div>
     </about>
     
     <!-- Home page -->
     <home>
-      <div class="ui segment">Home!</div>
+      <span>Home!</span>
     </home>
     
     <!-- Users default page fragment -->
@@ -115,24 +145,26 @@
   <script src="node_modules/riot-router/lib/router.js"></script>
   <script>
     riot.mount('*');
+    
     var Route = riot.router.Route, 
         DefaultRoute = riot.router.DefaultRoute, 
         NotFoundRoute = riot.router.NotFoundRoute, 
         RedirectRoute = riot.router.RedirectRoute;
-    riot.router.route(
-      new Route().routes([
-        new DefaultRoute({tag: 'home'}),
-        new Route({name: 'about', tag: 'about'}),
-        new Route({name: 'users', tag: 'users'}).routes([
-           new Route({name: 'recent-users', path:'recent', tag: 'recent-users'}),
-           new Route({name: 'user', path: '/user/:userId', tag: 'user'}),
-           new DefaultRoute({tag: 'users-home'}),
-           new NotFoundRoute({tag: 'not-found'})
-         ]),
-        new NotFoundRoute({tag: 'not-found'}),
-        new RedirectRoute({from: 'u', to: 'users/user'})
-      ])
-    );
+    
+    riot.router.routes([
+      new DefaultRoute({tag: 'home'}),
+      new Route({name: 'about', tag: 'about'}),
+      new Route({name: 'users', tag: 'users'}).routes([
+         new Route({name: 'recent-users', path:'recent', tag: 'recent-users'}),
+         new Route({name: 'user', path: '/user/:userId', tag: 'user'}),
+         new DefaultRoute({tag: 'users-home'}),
+         new NotFoundRoute({tag: 'not-found'})
+       ]),
+      new NotFoundRoute({tag: 'not-found'}),
+      new RedirectRoute({from: 'company', to: 'about'}),
+      new RedirectRoute({from: 'u', to: 'users/user'})
+    ]);
+    
     riot.router.start();
   </script>
 </body>

@@ -57,8 +57,7 @@ installed from npm.</p>
       NotFoundRoute <span class="pl-k">=</span> riot.router.NotFoundRoute, 
       RedirectRoute <span class="pl-k">=</span> riot.router.RedirectRoute;
 
-  riot.router.route(
-    <span class="pl-k">new</span> <span class="pl-en">Route</span>().routes([
+  riot.router.routes([
       <span class="pl-k">new</span> <span class="pl-en">DefaultRoute</span>({tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>home<span class="pl-pds">'</span></span>}),
       <span class="pl-k">new</span> <span class="pl-en">Route</span>({name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>about<span class="pl-pds">'</span></span>, tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>about<span class="pl-pds">'</span></span>}),
       <span class="pl-k">new</span> <span class="pl-en">Route</span>({name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>}).routes([
@@ -69,8 +68,8 @@ installed from npm.</p>
        ]),
       <span class="pl-k">new</span> <span class="pl-en">NotFoundRoute</span>({tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>not-found<span class="pl-pds">'</span></span>}),
       <span class="pl-k">new</span> <span class="pl-en">RedirectRoute</span>({from<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>company<span class="pl-pds">'</span></span>, to<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>about<span class="pl-pds">'</span></span>})
-    ])
-  );
+  ]);
+
   riot.router.<span class="pl-c1">start</span>();</pre></div>
           
 <h2>
