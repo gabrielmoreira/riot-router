@@ -20,7 +20,7 @@ var config = {
   },
   module: {
     loaders: [
-      {test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader'},
+      {test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader', query: {loose:["es6.classes", "es6.properties.computed"]}},
     ]
   },
   plugins: plugins
