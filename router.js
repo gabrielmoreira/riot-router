@@ -270,3 +270,5 @@ router.NotFoundRoute = NotFoundRoute;
 router._ = {Response: Response, Request: Request};
 
 riot.router = router;
+
+module.exports = router;
