@@ -227,11 +227,15 @@ riot.tag('route', '<route-content name="content"></route-content>', function(opt
     return level;
   }.bind(this);
 
-  this.mountTag = function(tag, api) {
+  this.unmountTag = function() {
     if (this.instance)
       this.instance.forEach(function(instance) {
         instance.unmount(true);
-      });
+      });    
+  }
+  
+  this.mountTag = function(tag, api) {
+    this.unmountTag();
     if (tag)
       this.instance = riot.mount(this.root.children[0], tag, api);
   }
@@ -258,6 +262,7 @@ riot.tag('route', '<route-content name="content"></route-content>', function(opt
 
   this.on('unmount', function() {
     riot.router.off('route:updated', this.updateRoute);
+    this.unmountTag();
   }.bind(this));
 
 });
