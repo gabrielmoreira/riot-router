@@ -156,8 +156,8 @@ class RedirectRoute extends Handler {
   process(request, response) {
     var uri = request.uri.replace(this.regex, "$1" + this.to + "$2");
     if (uri !== request.uri) {
-      var matcher = this.regex.exec(request.uri);
       var parent = request.parentUri || "";
+      // Rewrite response.uri & request.uri
       response.uri = parent + uri;
       request.uri = uri;
     }
