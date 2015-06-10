@@ -1,6 +1,6 @@
 {
   "name": "riot-router",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A routing solution for Riot",
   "main": "lib/router.min.js",
   "directories": {
