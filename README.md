@@ -24,25 +24,27 @@ What's it look like?
 --------------------
 
 ```js
-  var Route = riot.router.Route, 
-      DefaultRoute = riot.router.DefaultRoute, 
-      NotFoundRoute = riot.router.NotFoundRoute, 
-      RedirectRoute = riot.router.RedirectRoute;
+var Route = riot.router.Route, 
+    DefaultRoute = riot.router.DefaultRoute, 
+    NotFoundRoute = riot.router.NotFoundRoute, 
+    RedirectRoute = riot.router.RedirectRoute;
 
-  riot.router.routes([
-    new DefaultRoute({tag: 'home'}),
-    new Route({name: 'about', tag: 'about'}),
-    new Route({name: 'users', tag: 'users'}).routes([
-       new Route({name: 'recent-users', path:'recent', tag: 'recent-users'}),
-       new Route({name: 'user', path: '/user/:userId', tag: 'user'}),
-       new DefaultRoute({tag: 'users-home'}),
-       new NotFoundRoute({tag: 'not-found'})
-     ]),
-    new NotFoundRoute({tag: 'not-found'}),
-    new RedirectRoute({from: 'company', to: 'about'}),
-    new RedirectRoute({from: 'u', to: 'users/user'})
-  ]);
-  riot.router.start();
+riot.router.routes([
+  new DefaultRoute({tag: 'home'}),
+  new Route({tag: 'about'}),
+  new Route({tag: 'users'}).routes([
+     new Route({path:'top', tag: 'users-home', api: {text: 'Select a top user'}}),
+     new Route({path: '/user/:userId', tag: 'user'}),
+     new DefaultRoute({tag: 'users-home', api: {text: 'Select a user'}}),
+     new NotFoundRoute({tag: 'not-found'})
+   ]),
+  new NotFoundRoute({tag: 'not-found'}),
+  new RedirectRoute({from: 'company', to: 'about'}),
+  new RedirectRoute({from: 'u', to: 'users/user'})
+]);
+
+riot.mount('*');
+riot.router.start();
 ```
 
 Thanks, React-Router
