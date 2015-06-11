@@ -1,4 +1,5 @@
 var riot = require('riot');  
+var extend = require('extend');
 var error = console && console.error || function() {};
 
 class Router {
@@ -34,6 +35,10 @@ class Router {
   start() {
     riot.route(this.handleRequest);
     riot.route.start();
+    this.exec();
+  }
+
+  exec() {
     riot.route.exec(this.handleRequest);
   }
 }
@@ -79,10 +84,12 @@ class Route extends Handler {
     super(options);
     options = options || {};
     this.tag = options.tag;
+    this.api = options.api;
     this.path = options.path;
     this.name = options.name;
     this.pathParameterNames = [];
-    this.pattern = "^/?" + (this.path || this.name || this.tag || "").replace(/^\//,"").replace(/:([^/]+)/, function(ignored, group) {
+    var path = (this.path || this.name || this.tag || "").replace(/^\//,"");
+    this.pattern = "^/?" + path.replace(/:([^/]+)/, function(ignored, group) {
       this.pathParameterNames.push(group);
       return "([^/]+)";
     }.bind(this)) + "(:?/|$)";
@@ -110,7 +117,7 @@ class Route extends Handler {
         var name = this.pathParameterNames[i];
         params[name] = matcher[parseInt(i, 10) + 1];
       }
-      return {route: this, tag: this.tag, found: matcher[0], params: params};
+      return {route: this, tag: this.tag, api: this.api, found: matcher[0], params: params};
     }
     return false;
   }
@@ -140,9 +147,10 @@ class NotFoundRoute extends Handler {
     super(options);
     options = options || {};
     this.tag = options.tag;
+    this.api = options.api;
   }
   matches(request) {
-    return {route: this, tag: this.tag, found: request.uri};
+    return {route: this, tag: this.tag, api: this.api, found: request.uri};
   }
 }
 
@@ -174,11 +182,12 @@ class DefaultRoute extends Handler {
     super(options);
     options = options || {};
     this.tag = options.tag;
+    this.api = options.api;
   }
   matches(request) {
     var uri = request.uri.trim();
     if (uri === "/" || uri === "")
-      return {route: this, tag: this.tag, found: uri};
+      return {route: this, tag: this.tag, api: this.api, found: uri};
   }
 }
 
@@ -219,10 +228,7 @@ class Response {
   }
 }
 
-riot.tag('route-empty', '', function(opts) {
-});
-
-riot.tag('route', '<route-content name="content"></route-content>', function(opts) {
+riot.tag('route', '<router-content></router-content>', function(opts) {
   this.calculateLevel = function(target) {
     var level = 0;
     if (target.parent) level += this.calculateLevel(target.parent);
@@ -240,19 +246,21 @@ riot.tag('route', '<route-content name="content"></route-content>', function(opt
   
   this.mountTag = function(tag, api) {
     this.unmountTag();
-    if (tag)
+    if (tag) {
+      this.root.replaceChild(document.createElement(tag), this.root.children[0]);
       this.instance = riot.mount(this.root.children[0], tag, api);
+    }
   }
 
   this.updateRoute = function() {
-    var mount = {tag: 'route-empty'};
+    var mount = {tag: null};
     if (riot.router && riot.router.current) {
       var response = riot.router.current;
       if (this.level <= response.size()) {
         var matcher = response.get(this.level);
         if (matcher) {
-          var api = JSON.parse( JSON.stringify( matcher.params || {} ) );
-          api.__router_level = this.level;
+          var params = matcher.params || {};
+          var api = extend(true, {}, matcher.api, params, {__router_level: this.level});
           mount = {tag: matcher.tag, api: api};
         }
       }
