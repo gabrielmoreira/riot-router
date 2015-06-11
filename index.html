@@ -52,25 +52,27 @@ installed from npm.</p>
 <h2>
 <a id="whats-it-look-like" class="anchor" href="#whats-it-look-like" aria-hidden="true"><span class="octicon octicon-link"></span></a>What's it look like?</h2>
 
-<div class="highlight highlight-js"><pre>  <span class="pl-k">var</span> Route <span class="pl-k">=</span> riot.router.Route, 
-      DefaultRoute <span class="pl-k">=</span> riot.router.DefaultRoute, 
-      NotFoundRoute <span class="pl-k">=</span> riot.router.NotFoundRoute, 
-      RedirectRoute <span class="pl-k">=</span> riot.router.RedirectRoute;
+<div class="highlight highlight-js"><pre><span class="pl-k">var</span> Route <span class="pl-k">=</span> riot.router.Route, 
+    DefaultRoute <span class="pl-k">=</span> riot.router.DefaultRoute, 
+    NotFoundRoute <span class="pl-k">=</span> riot.router.NotFoundRoute, 
+    RedirectRoute <span class="pl-k">=</span> riot.router.RedirectRoute;
 
-  riot.router.routes([
-      <span class="pl-k">new</span> <span class="pl-en">DefaultRoute</span>({tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>home<span class="pl-pds">'</span></span>}),
-      <span class="pl-k">new</span> <span class="pl-en">Route</span>({name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>about<span class="pl-pds">'</span></span>, tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>about<span class="pl-pds">'</span></span>}),
-      <span class="pl-k">new</span> <span class="pl-en">Route</span>({name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>}).routes([
-         <span class="pl-k">new</span> <span class="pl-en">Route</span>({name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>recent-users<span class="pl-pds">'</span></span>, path<span class="pl-k">:</span><span class="pl-s"><span class="pl-pds">'</span>recent<span class="pl-pds">'</span></span>, tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>recent-users<span class="pl-pds">'</span></span>}),
-         <span class="pl-k">new</span> <span class="pl-en">Route</span>({name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>user<span class="pl-pds">'</span></span>, path<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>/user/:userId<span class="pl-pds">'</span></span>, tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>user<span class="pl-pds">'</span></span>}),
-         <span class="pl-k">new</span> <span class="pl-en">DefaultRoute</span>({tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>users-home<span class="pl-pds">'</span></span>}),
-         <span class="pl-k">new</span> <span class="pl-en">NotFoundRoute</span>({tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>not-found<span class="pl-pds">'</span></span>})
-       ]),
-      <span class="pl-k">new</span> <span class="pl-en">NotFoundRoute</span>({tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>not-found<span class="pl-pds">'</span></span>}),
-      <span class="pl-k">new</span> <span class="pl-en">RedirectRoute</span>({from<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>company<span class="pl-pds">'</span></span>, to<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>about<span class="pl-pds">'</span></span>})
-  ]);
+riot.router.routes([
+  <span class="pl-k">new</span> <span class="pl-en">DefaultRoute</span>({tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>home<span class="pl-pds">'</span></span>}),
+  <span class="pl-k">new</span> <span class="pl-en">Route</span>({tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>about<span class="pl-pds">'</span></span>}),
+  <span class="pl-k">new</span> <span class="pl-en">Route</span>({tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>}).routes([
+     <span class="pl-k">new</span> <span class="pl-en">Route</span>({path<span class="pl-k">:</span><span class="pl-s"><span class="pl-pds">'</span>top<span class="pl-pds">'</span></span>, tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>users-home<span class="pl-pds">'</span></span>, api<span class="pl-k">:</span> {text<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Select a top user<span class="pl-pds">'</span></span>}}),
+     <span class="pl-k">new</span> <span class="pl-en">Route</span>({path<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>/user/:userId<span class="pl-pds">'</span></span>, tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>user<span class="pl-pds">'</span></span>}),
+     <span class="pl-k">new</span> <span class="pl-en">DefaultRoute</span>({tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>users-home<span class="pl-pds">'</span></span>, api<span class="pl-k">:</span> {text<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Select a user<span class="pl-pds">'</span></span>}}),
+     <span class="pl-k">new</span> <span class="pl-en">NotFoundRoute</span>({tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>not-found<span class="pl-pds">'</span></span>})
+   ]),
+  <span class="pl-k">new</span> <span class="pl-en">NotFoundRoute</span>({tag<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>not-found<span class="pl-pds">'</span></span>}),
+  <span class="pl-k">new</span> <span class="pl-en">RedirectRoute</span>({from<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>company<span class="pl-pds">'</span></span>, to<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>about<span class="pl-pds">'</span></span>}),
+  <span class="pl-k">new</span> <span class="pl-en">RedirectRoute</span>({from<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>u<span class="pl-pds">'</span></span>, to<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>users/user<span class="pl-pds">'</span></span>})
+]);
 
-  riot.router.<span class="pl-c1">start</span>();</pre></div>
+riot.mount(<span class="pl-s"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>);
+riot.router.<span class="pl-c1">start</span>();</pre></div>
           
 <h2>
 <a id="mounting-routes" class="anchor" href="#mounting-routes" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to mount my route?</h2>
