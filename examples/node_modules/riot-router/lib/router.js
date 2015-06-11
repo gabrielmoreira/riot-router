@@ -61,6 +61,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var riot = __webpack_require__(1);
+	var extend = __webpack_require__(2);
 	var error = console && console.error || function () {};
 	
 	var Router = (function () {
@@ -98,6 +99,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Router.prototype.start = function start() {
 	    riot.route(this.handleRequest);
 	    riot.route.start();
+	    this.exec();
+	  };
+	
+	  Router.prototype.exec = function exec() {
 	    riot.route.exec(this.handleRequest);
 	  };
 	
@@ -149,10 +154,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _Handler.call(this, options);
 	    options = options || {};
 	    this.tag = options.tag;
+	    this.api = options.api;
 	    this.path = options.path;
 	    this.name = options.name;
 	    this.pathParameterNames = [];
-	    this.pattern = '^/?' + (this.path || this.name || this.tag || '').replace(/^\//, '').replace(/:([^/]+)/, (function (ignored, group) {
+	    var path = (this.path || this.name || this.tag || '').replace(/^\//, '');
+	    this.pattern = '^/?' + path.replace(/:([^/]+)/, (function (ignored, group) {
 	      this.pathParameterNames.push(group);
 	      return '([^/]+)';
 	    }).bind(this)) + '(:?/|$)';
@@ -188,7 +195,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var name = this.pathParameterNames[i];
 	        params[name] = matcher[parseInt(i, 10) + 1];
 	      }
-	      return { route: this, tag: this.tag, found: matcher[0], params: params };
+	      return { route: this, tag: this.tag, api: this.api, found: matcher[0], params: params };
 	    }
 	    return false;
 	  };
@@ -222,12 +229,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _Handler2.call(this, options);
 	    options = options || {};
 	    this.tag = options.tag;
+	    this.api = options.api;
 	  }
 	
 	  _inherits(NotFoundRoute, _Handler2);
 	
 	  NotFoundRoute.prototype.matches = function matches(request) {
-	    return { route: this, tag: this.tag, found: request.uri };
+	    return { route: this, tag: this.tag, api: this.api, found: request.uri };
 	  };
 	
 	  return NotFoundRoute;
@@ -267,13 +275,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _Handler4.call(this, options);
 	    options = options || {};
 	    this.tag = options.tag;
+	    this.api = options.api;
 	  }
 	
 	  _inherits(DefaultRoute, _Handler4);
 	
 	  DefaultRoute.prototype.matches = function matches(request) {
 	    var uri = request.uri.trim();
-	    if (uri === '/' || uri === '') return { route: this, tag: this.tag, found: uri };
+	    if (uri === '/' || uri === '') return { route: this, tag: this.tag, api: this.api, found: uri };
 	  };
 	
 	  return DefaultRoute;
@@ -321,9 +330,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return Response;
 	})();
 	
-	riot.tag('route-empty', '', function (opts) {});
-	
-	riot.tag('route', '<route-content name="content"></route-content>', function (opts) {
+	riot.tag('route', '<router-content></router-content>', function (opts) {
 	  this.calculateLevel = (function (target) {
 	    var level = 0;
 	    if (target.parent) level += this.calculateLevel(target.parent);
@@ -340,18 +347,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  this.mountTag = function (tag, api) {
 	    this.unmountTag();
-	    if (tag) this.instance = riot.mount(this.root.children[0], tag, api);
+	    if (tag) {
+	      this.root.replaceChild(document.createElement(tag), this.root.children[0]);
+	      this.instance = riot.mount(this.root.children[0], tag, api);
+	    }
 	  };
 	
 	  this.updateRoute = (function () {
-	    var mount = { tag: 'route-empty' };
+	    var mount = { tag: null };
 	    if (riot.router && riot.router.current) {
 	      var response = riot.router.current;
 	      if (this.level <= response.size()) {
 	        var matcher = response.get(this.level);
 	        if (matcher) {
-	          var api = JSON.parse(JSON.stringify(matcher.params || {}));
-	          api.__router_level = this.level;
+	          var params = matcher.params || {};
+	          var api = extend(true, {}, matcher.api, params, { __router_level: this.level });
 	          mount = { tag: matcher.tag, api: api };
 	        }
 	      }
@@ -385,6 +395,101 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var hasOwn = Object.prototype.hasOwnProperty;
+	var toStr = Object.prototype.toString;
+	var undefined;
+	
+	var isArray = function isArray(arr) {
+		if (typeof Array.isArray === 'function') {
+			return Array.isArray(arr);
+		}
+	
+		return toStr.call(arr) === '[object Array]';
+	};
+	
+	var isPlainObject = function isPlainObject(obj) {
+		'use strict';
+		if (!obj || toStr.call(obj) !== '[object Object]') {
+			return false;
+		}
+	
+		var has_own_constructor = hasOwn.call(obj, 'constructor');
+		var has_is_property_of_method = obj.constructor && obj.constructor.prototype && hasOwn.call(obj.constructor.prototype, 'isPrototypeOf');
+		// Not own constructor property must be Object
+		if (obj.constructor && !has_own_constructor && !has_is_property_of_method) {
+			return false;
+		}
+	
+		// Own properties are enumerated firstly, so to speed up,
+		// if last one is own, then all properties are own.
+		var key;
+		for (key in obj) {}
+	
+		return key === undefined || hasOwn.call(obj, key);
+	};
+	
+	module.exports = function extend() {
+		'use strict';
+		var options, name, src, copy, copyIsArray, clone,
+			target = arguments[0],
+			i = 1,
+			length = arguments.length,
+			deep = false;
+	
+		// Handle a deep copy situation
+		if (typeof target === 'boolean') {
+			deep = target;
+			target = arguments[1] || {};
+			// skip the boolean and the target
+			i = 2;
+		} else if ((typeof target !== 'object' && typeof target !== 'function') || target == null) {
+			target = {};
+		}
+	
+		for (; i < length; ++i) {
+			options = arguments[i];
+			// Only deal with non-null/undefined values
+			if (options != null) {
+				// Extend the base object
+				for (name in options) {
+					src = target[name];
+					copy = options[name];
+	
+					// Prevent never-ending loop
+					if (target === copy) {
+						continue;
+					}
+	
+					// Recurse if we're merging plain objects or arrays
+					if (deep && copy && (isPlainObject(copy) || (copyIsArray = isArray(copy)))) {
+						if (copyIsArray) {
+							copyIsArray = false;
+							clone = src && isArray(src) ? src : [];
+						} else {
+							clone = src && isPlainObject(src) ? src : {};
+						}
+	
+						// Never move original objects, clone them
+						target[name] = extend(deep, clone, copy);
+	
+					// Don't bring in undefined values
+					} else if (copy !== undefined) {
+						target[name] = copy;
+					}
+				}
+			}
+		}
+	
+		// Return the modified object
+		return target;
+	};
+	
+
 
 /***/ }
 /******/ ])

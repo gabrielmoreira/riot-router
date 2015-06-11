@@ -38,9 +38,11 @@
     }
     .app-content {
       display: block;
-      padding: 2em 2em 7em;
+      padding: 1em 2em 7em;
     }
-    
+    route, route > * {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -61,6 +63,7 @@
         {url: '#/', text: 'Home', icon: 'home'},
         {url: '#/about', text:'About', icon: 'info'},
         {url: '#/users', text:'Users', icon: 'users'},
+        {url: '#/users/top', text:'Top Users', icon: 'favorite'},
         {url: '#/users/user/123', text: 'User #123', icon: 'user'},
         {url: '#/users/user/456', text: 'User #456', icon: 'user'}
       ];
@@ -71,6 +74,7 @@
     
     <!-- Users page -->
     <users>
+      <route if={!userId} class="ui header"/>
       <div class="ui grid">
         <div class="{userId ? 'six' : 'sixteen'} wide column">
           <div class="ui segment">
@@ -134,6 +138,7 @@
     
     <!-- Users default page fragment -->
     <users-home>
+      <h4>{opts.text}</h4>
     </users-home>
     
     <!-- Not found page -->
@@ -144,8 +149,6 @@
   <script src="node_modules/riot/riot+compiler.min.js"></script>
   <script src="node_modules/riot-router/lib/router.js"></script>
   <script>
-    riot.mount('*');
-    
     var Route = riot.router.Route, 
         DefaultRoute = riot.router.DefaultRoute, 
         NotFoundRoute = riot.router.NotFoundRoute, 
@@ -153,11 +156,11 @@
     
     riot.router.routes([
       new DefaultRoute({tag: 'home'}),
-      new Route({name: 'about', tag: 'about'}),
-      new Route({name: 'users', tag: 'users'}).routes([
-         new Route({name: 'recent-users', path:'recent', tag: 'recent-users'}),
-         new Route({name: 'user', path: '/user/:userId', tag: 'user'}),
-         new DefaultRoute({tag: 'users-home'}),
+      new Route({tag: 'about'}),
+      new Route({tag: 'users'}).routes([
+         new Route({path:'top', tag: 'users-home', api: {text: 'Select a top user'}}),
+         new Route({path: '/user/:userId', tag: 'user'}),
+         new DefaultRoute({tag: 'users-home', api: {text: 'Select a user'}}),
          new NotFoundRoute({tag: 'not-found'})
        ]),
       new NotFoundRoute({tag: 'not-found'}),
@@ -165,6 +168,7 @@
       new RedirectRoute({from: 'u', to: 'users/user'})
     ]);
     
+    riot.mount('*');
     riot.router.start();
   </script>
 </body>
