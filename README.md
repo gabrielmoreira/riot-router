@@ -50,5 +50,4 @@ riot.router.start();
 Thanks, React-Router
 --------------------
 
-This library is highly inspired by the React-Router routing API. In general,
-it's a translation of the React-Router api to Riot.
+This library is highly inspired by the React-Router routing API.
