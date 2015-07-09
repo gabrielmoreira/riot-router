@@ -3,12 +3,14 @@ var extend = require('extend');
 var error = console && console.error || function() {};
 
 class Router {
+
   constructor() {
     riot.router = this;
     riot.observable(this);
-    this.handler = new Route();
-    this.current = new Response(new Request(""));
-    this.handleRequest = this.handleRequest.bind(this);
+    this.interceptors = [this.processRoute.bind(this)];
+    this.handler = new InitialRoute();
+    this.current = new Context("").response;
+    this.process = this.process.bind(this);
   }
 
   route(handler) {
@@ -19,27 +21,86 @@ class Router {
     this.route(new Route().routes(routes));
   }
 
-  process(request) {
-    var response = new Response(request);
-    this.handler.process(request, response);
-    this.current = response;
-    this.trigger('route:updated', response);
-    return response;
+  use(interceptor) {
+    this.interceptors.push(interceptor);
   }
 
-  handleRequest() {
+  process() {
     var params = Array.prototype.slice.call(arguments);
-    this.process(new Request(params.join("/")));
+    var context = new Context(params.join("/"));
+    this.processRequest(context);
+    return context;
+  }
+
+  processRequest(context) {
+    this.processInterceptors(context);
+    return this.processResponse(context);
+  }
+
+  processResponse(context) {
+    if (this.isRedirect(context)) {
+      return this.processRedirect(context);
+    }
+    var {request, response} = context;
+    if (!response.redirectTo) {
+      this.current = response;
+      this.trigger('route:updated', response);
+      return context;
+    }
+  }
+
+  isRedirect(context) {
+    return !!context.response.redirectTo;
+  }
+
+  processRedirect(context) {
+    context.redirectTo(context.response.redirectTo);
+    return this.processRequest(context);
+  }
+
+  processInterceptors(context, preInterceptors, postInterceptors) {
+    var interceptors = (preInterceptors || []).concat(this.interceptors).concat(postInterceptors || []);
+    var next = function next() {
+      if (!context.stop) {
+        var processor = interceptors.shift();
+        var {request, response} = context;
+        if (processor)
+          return processor(request, response, next, context);
+      }
+      return context;
+    };
+    return next();
+  }
+
+  processRoute(request, response, next, context) {
+    this.handler.process(request, response, context);
+    return next();
   }
 
   start() {
-    riot.route(this.handleRequest);
+    riot.route(this.process);
     riot.route.start();
     this.exec();
   }
 
   exec() {
-    riot.route.exec(this.handleRequest);
+    riot.route.exec(this.process);
+  }
+}
+
+class Context {
+  constructor(request) {
+    this.request = typeof(request) === 'string' ? new Request(request) : request;
+    this.response = new Response(this.request);
+    this.redirectStack = [];
+  }
+
+  redirectTo(uri) {
+    if (this.redirectStack.indexOf(uri) > -1)
+      throw new Error("Cyclic redirection to " + uri + ". Stack = " + this.redirectStack);
+    this.redirectStack.push(uri);
+    this.request = new Request(uri);
+    this.response = new Response(this.request);
   }
 }
 
@@ -76,6 +137,10 @@ class Handler {
       }
       return false;
     }
+  }
+
+  createRequest(request, matcher) {
+    return new ChildRequest(request, matcher);
   }
 }
 
@@ -129,11 +194,21 @@ class Route extends Handler {
   }
 
   processRoutes(request, response, matcher) {
-    return super.processRoutes(new RouteChildRequest(request, matcher), response, this._routes);
+    return super.processRoutes(super.createRequest(request, matcher), response, this._routes);
   }
 }
 
-class RouteChildRequest {
+class InitialRoute extends Route {
+  processMatch() {
+    return true;
+  }
+
+  processRoutes(request, response, matcher) {
+    return super.processRoutes(request, response, this._routes);
+  }
+}
+
+class ChildRequest {
   constructor(request, matcher) {
     this.request = request;
     this.matcher = matcher;
@@ -226,6 +301,7 @@ class Response {
   isEmpty() {
     return this.matches.length;
   }
+
 }
 
 riot.tag('route', '<router-content></router-content>', function(opts) {

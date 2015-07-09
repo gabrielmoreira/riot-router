@@ -12,8 +12,9 @@ describe('riot.router', function() {
   riot.router.start();
   
   it('can handle riot routes', function() {
-    riot.router.route(new Route());
+    riot.router.route(new Route({tag: 'user', path: '/user/:id'}));
     riot.route('/user/123');
+    assert.equal(riot.router.current.matches[0].tag, 'user');
     assert.equal(riot.router.current.uri, '/user/123');
   });
   
@@ -57,4 +58,23 @@ describe('riot.router.Route', function() {
     var matcher = response.get(1);
     assert.equal(matcher.tag, 'user-default');
   });
+
+  it('can intercept & redirect route', function() {
+    var userIsLogged = false;
+    riot.router.use(function(request, response, next) {
+      try {
+        return next();
+      } finally {
+        if (request.uri != '/redirected')
+          response.redirectTo = '/redirected';
+      }
+    });
+    riot.router.routes([
+      new Route({tag: 'user', path: '/user/:id', secure: true}),
+      new Route({tag: 'redirected'})
+    ]);
+    var response = riot.router.process('/user/123').response;
+    assert.equal('/redirected', response.uri);
+    assert.equal('redirected', response.get(1).tag);
+  })
 });

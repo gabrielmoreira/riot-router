@@ -3,12 +3,13 @@
 <head>
   <meta charset="utf-8">
   <title>Riot App Example 01</title>
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/semantic-ui/1.12/semantic.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/semantic-ui/2/semantic.min.css">
   <style>
-    app {
+    .content.app {
       display: block;
       background-color: #FFFFFF;
       margin: 0 auto;
+      margin-top: 40px;
       box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.05);
       border-left: 1px solid #DDDDDD;
       border-right: 1px solid #DDDDDD;
@@ -16,27 +17,10 @@
       min-height: 400px;
     }
     
-    app {
-      position: relative;
-      width: 915px;
-      margin: 0px auto;
-    }
-    @media only screen and (min-width: 1355px) {
-      app {
-        width: 850px;
-      }
-    }
-    @media only screen and (min-width: 998px) {
-      app {
-        right: 110px;
-      }
-    }
-    
-    .main.menu {
-      display: block;
+    .menu.app {
       border-radius: 0;
     }
-    .app-content {
+    .content.app {
       display: block;
       padding: 1em 2em 7em;
     }
@@ -49,27 +33,75 @@
   <app/>
 
   <script type="riot/tag">
+    <!-- Login page -->
+    <login>
+      <div>
+        <input name="username"/>
+        <button onClick={this.login}>Login</button>
+      </div>
+      login() {
+        window.user = this.username;
+        localStorage.setItem('user', window.user);
+        // Go to home page
+        riot.route('#/');
+      }
+    </login>
+
+    <logout>
+      window.user = null;
+      localStorage.removeItem('user');
+      // Go to login page
+      riot.route('#/login');
+    </logout>
+
     <!-- Application -->
     <app class="app">
       <main-menu/>
-      <route class="app-content"/>
+      <route class="ui container app content"/>
     </app>
     
     <!-- Main menu -->
-    <main-menu class="ui menu teal inverted main">
-      <a class={item: true, active: menu.url.substring(1) === riot.router.current.uri} href="{menu.url}" each={menu in this.menus}><i class="{menu.icon} icon" if={menu.icon}></i>{menu.text}</a>
+    <main-menu class="ui teal inverted top fixed app menu">
+      <div class="ui container">
+        <a class={item: true, active: menu.url.substring(1) === riot.router.current.uri} href="{menu.url}" each={menu in this.leftMenus}><i class="{menu.icon} icon" if={menu.icon}></i>{menu.text}</a>
+        <div class="right menu" if={this.rightMenus.length}>
+          <a class={item: true, active: menu.url.substring(1) === riot.router.current.uri} href="{menu.url}" each={menu in this.rightMenus}><i class="{menu.icon} icon" if={menu.icon}></i>{menu.text}</a>
+        </div>
+      </div>
+      createLeftMenus() {
+        if (!window.user)
+          return [
+          ];
+        return [
+          {url: '#/', text: 'Home', icon: 'home'},
+          {url: '#/about', text:'About', icon: 'info'},
+          {url: '#/users', text:'Users', icon: 'users'},
+          {url: '#/users/top', text:'Top Users', icon: 'favorite'},
+          {url: '#/users/user/123', text: 'User #123', icon: 'user'},
+          {url: '#/users/user/456', text: 'User #456', icon: 'user'},
+        ];
+      }
+      createRightMenus() {
+        if (!window.user)
+          return [
+            {url: '#/login', text: 'Login', icon: 'sign in'}
+          ];
+        return [
+          {url: '#/logout', text: 'Logout', icon: 'sign out'},
+        ];
+      }
       
-      this.menus = [
-        {url: '#/', text: 'Home', icon: 'home'},
-        {url: '#/about', text:'About', icon: 'info'},
-        {url: '#/users', text:'Users', icon: 'users'},
-        {url: '#/users/top', text:'Top Users', icon: 'favorite'},
-        {url: '#/users/user/123', text: 'User #123', icon: 'user'},
-        {url: '#/users/user/456', text: 'User #456', icon: 'user'}
-      ];
+      createMenus() {
+        this.leftMenus = this.createLeftMenus();
+        this.rightMenus = this.createRightMenus();
+      }
+      
       
       // On route update, update this fragment.
-      riot.router.on('route:updated', this.update.bind(this));
+      riot.router.on('route:updated', function() {
+        this.createMenus();
+        this.update();
+      }.bind(this));
     </main-menu>
     
     <!-- Users page -->
@@ -146,17 +178,41 @@
       <div class="ui segment">Page '{riot.router.current.uri}' not found! </div>
     </not-found>
   </script>
-  <script src="//cdn.jsdelivr.net/riot/2.1/riot.min.js"></script>
-  <script src="//cdn.jsdelivr.net/riot/2.1/compiler.min.js"></script>
+  <script src="//cdn.jsdelivr.net/riot/2.2/riot.min.js"></script>
+  <script src="//cdn.jsdelivr.net/riot/2.2/compiler.min.js"></script>
   <script src="../lib/router.js"></script>
+
   <script>
+    // Initialize current user
+    window.user = localStorage.getItem('user');
+
+    // Redirect unlogged users to /login page
+    function securityFilter(request, response, next) {
+      try {
+        return next();
+      } finally {
+        if (!window.user && request.uri !== '/login') {
+          response.redirectTo = '/login';
+        }
+      }
+    }
+
+    // Mount all Riot tags.
+    riot.mount('*');
+    
     var Route = riot.router.Route, 
         DefaultRoute = riot.router.DefaultRoute, 
         NotFoundRoute = riot.router.NotFoundRoute, 
         RedirectRoute = riot.router.RedirectRoute;
-    
+
+    // Apply security filter to Riot-Router
+    riot.router.use(securityFilter);
+
+    // My app routes
     riot.router.routes([
       new DefaultRoute({tag: 'home'}),
+      new Route({tag: 'login'}),
+      new Route({tag: 'logout'}),
       new Route({tag: 'about'}),
       new Route({tag: 'users'}).routes([
          new Route({path:'top', tag: 'users-home', api: {text: 'Select a top user'}}),
@@ -169,7 +225,7 @@
       new RedirectRoute({from: 'u', to: 'users/user'})
     ]);
     
-    riot.mount('*');
+    // Start routing
     riot.router.start();
   </script>
 </body>
