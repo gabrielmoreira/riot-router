@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "riot": "^2.1.0",
-    "riot-router": "^0.5.0"
+    "riot": "^2.2.1",
+    "riot-router": "^0.6.0"
   }
 }

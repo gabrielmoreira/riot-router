@@ -37,24 +37,32 @@ tmpl('{ undefined } - { false } - { null } - { 0 }', {})
 */
 
 
-var brackets = (function(orig, s, b) {
+var brackets = (function(orig) {
+
+  var cachedBrackets,
+      r,
+      b,
+      re = /[{}]/g
+
   return function(x) {
 
     // make sure we use the current setting
-    s = riot.settings.brackets || orig
-    if (b != s) b = s.split(' ')
+    var s = riot.settings.brackets || orig
+
+    // recreate cached vars if needed
+    if (cachedBrackets !== s) {
+      cachedBrackets = s
+      b = s.split(' ')
+      r = b.map(function (e) { return e.replace(/(?=.)/g, '\\') })
+    }
 
     // if regexp given, rewrite it with current brackets (only if differ from default)
-    return x && x.test
-      ? s == orig
-        ? x : RegExp(x.source
-                      .replace(/\{/g, b[0].replace(/(?=.)/g, '\\'))
-                      .replace(/\}/g, b[1].replace(/(?=.)/g, '\\')),
-                    x.global ? 'g' : '')
-
+    return x instanceof RegExp ? (
+        s === orig ? x :
+        new RegExp(x.source.replace(re, function(b) { return r[~~(b === '}')] }), x.global ? 'g' : '')
+      ) :
       // else, get specific bracket
-      : b[x]
-
+      b[x]
   }
 })('{ }')
 
@@ -227,13 +235,13 @@ var tmpl = (function() {
     str.replace(re, function(_, open, close, pos) {
 
       // if outer inner bracket, mark position
-      if(!level && open) start = pos
+      if (!level && open) start = pos
 
       // in(de)crease bracket level
       level += open ? 1 : -1
 
       // if outer closing bracket, grab the match
-      if(!level && close != null) matches.push(str.slice(start, pos+close.length))
+      if (!level && close != null) matches.push(str.slice(start, pos+close.length))
 
     })
 
