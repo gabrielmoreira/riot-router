@@ -77,4 +77,17 @@ describe('riot.router.Route', function() {
     assert.equal('/redirected', response.uri);
     assert.equal('redirected', response.get(1).tag);
   })
+
+  it('can extract multiple path parameters', function() {
+    var route = new Route({tag: 'user', path: '/user/:id/:name'});
+    var request = new Request('/user/123/Gabriel');
+    var response = new Response(request);
+    assert.ok(route.process(request, response));
+    assert.equal(response.size(), 1);
+    var matcher = response.get(0);
+    assert.equal(matcher.tag, 'user');
+    assert.equal(matcher.route, route);
+    assert.equal(matcher.params.id, '123');
+    assert.equal(matcher.params.name, 'Gabriel');
+  });
 });
