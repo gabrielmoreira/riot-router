@@ -10,6 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "riot": "^2.2.1",
-    "riot-router": "^0.6.0"
+    "riot-router": "^0.6.1"
   }
 }
