@@ -154,7 +154,7 @@ class Route extends Handler {
     this.name = options.name;
     this.pathParameterNames = [];
     var path = (this.path || this.name || this.tag || "").replace(/^\//,"");
-    this.pattern = "^/?" + path.replace(/:([^/]+)/, function(ignored, group) {
+    this.pattern = "^/?" + path.replace(/:([^/]+)/g, function(ignored, group) {
       this.pathParameterNames.push(group);
       return "([^/]+)";
     }.bind(this)) + "(:?/|$)";
