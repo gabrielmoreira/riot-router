@@ -16,7 +16,7 @@
       border-bottom: 1px solid #DDDDDD;
       min-height: 400px;
     }
-    
+
     .menu.app {
       border-radius: 0;
     }
@@ -59,7 +59,7 @@
       <main-menu/>
       <route class="ui container app content"/>
     </app>
-    
+
     <!-- Main menu -->
     <main-menu class="ui teal inverted top fixed app menu">
       <div class="ui container">
@@ -90,20 +90,20 @@
           {url: '#/logout', text: 'Logout', icon: 'sign out'},
         ];
       }
-      
+
       createMenus() {
         this.leftMenus = this.createLeftMenus();
         this.rightMenus = this.createRightMenus();
       }
-      
-      
+
+
       // On route update, update this fragment.
       riot.router.on('route:updated', function() {
         this.createMenus();
         this.update();
       }.bind(this));
     </main-menu>
-    
+
     <!-- Users page -->
     <users>
       <route if={!userId} class="ui header"/>
@@ -140,12 +140,12 @@
         </div>
         <route class="ten wide column" if={userId}/>
       </div>
-      
+
       this.on('update', function() {
         this.userId = riot.router.current.params.userId;
       }.bind(this));
     </users>
-    
+
     <!-- User detail page fragment -->
     <user>
       <div class="ui segment">
@@ -154,7 +154,7 @@
         <div if={opts.userId === '789'}>789 - Gabriel</div>
       </div>
     </user>
-    
+
     <!-- About page -->
     <about>
       <div class="ui segment">
@@ -162,17 +162,17 @@
         <a href="#/company">Old link</a>
       </div>
     </about>
-    
+
     <!-- Home page -->
     <home>
       <span>Home!</span>
     </home>
-    
+
     <!-- Users default page fragment -->
     <users-home>
       <h4>{opts.text}</h4>
     </users-home>
-    
+
     <!-- Not found page -->
     <not-found>
       <div class="ui segment">Page '{riot.router.current.uri}' not found! </div>
@@ -199,10 +199,10 @@
 
     // Mount all Riot tags.
     riot.mount('*');
-    
-    var Route = riot.router.Route, 
-        DefaultRoute = riot.router.DefaultRoute, 
-        NotFoundRoute = riot.router.NotFoundRoute, 
+
+    var Route = riot.router.Route,
+        DefaultRoute = riot.router.DefaultRoute,
+        NotFoundRoute = riot.router.NotFoundRoute,
         RedirectRoute = riot.router.RedirectRoute;
 
     // Apply security filter to Riot-Router
@@ -224,7 +224,7 @@
       new RedirectRoute({from: 'company', to: 'about'}),
       new RedirectRoute({from: 'u', to: 'users/user'})
     ]);
-    
+
     // Start routing
     riot.router.start();
   </script>
