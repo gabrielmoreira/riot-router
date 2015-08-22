@@ -33,6 +33,18 @@ describe('riot.router.Route', function() {
     assert.equal(matcher.params.id, '123');
   });
 
+  it('can extract encoded path parameters', function() {
+    var route = new Route({tag: 'user', path: '/user/:name'});
+    var request = new Request('/user/Jòsé%26');
+    var response = new Response(request);
+    assert.ok(route.process(request, response));
+    assert.equal(response.size(), 1);
+    var matcher = response.get(0);
+    assert.equal(matcher.tag, 'user');
+    assert.equal(matcher.route, route);
+    assert.equal(matcher.params.name, 'Jòsé&');
+  });
+
   it('can handle not found routes', function() {
     var route = new Route().routes([
       new Route({tag: 'user', path: '/user/:id'}),

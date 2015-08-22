@@ -180,7 +180,7 @@ class Route extends Handler {
       var params = {};
       for (var i in this.pathParameterNames) {
         var name = this.pathParameterNames[i];
-        params[name] = matcher[parseInt(i, 10) + 1];
+        params[name] = decodeURIComponent(matcher[parseInt(i, 10) + 1]);
       }
       return {route: this, tag: this.tag, api: this.api, found: matcher[0], params: params};
     }
