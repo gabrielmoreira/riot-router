@@ -114,16 +114,16 @@ class Handler {
 
   process(request, response) {
     var matcher = this.matches(request);
-    if (!matcher) return this.processNotMatch(request, response);
-    return this.processMatch(request, response, matcher);
+    if (!matcher) return this.routeMiss(request, response);
+    return this.routeMatch(request, response, matcher);
   }
 
-  processMatch(request, response, matcher) {
+  routeMatch(request, response, matcher) {
     response.add(matcher);
     return true;
   }
 
-  processNotMatch(request, response) {
+  routeMiss(request, response) {
     return false;
   }
 
@@ -187,8 +187,8 @@ class Route extends Handler {
     return false;
   }
 
-  processMatch(request, response, matcher) {
-    var matches = super.processMatch(request, response, matcher);
+  routeMatch(request, response, matcher) {
+    var matches = super.routeMatch(request, response, matcher);
     this.processRoutes(request, response, matcher);
     return matches;
   }
@@ -199,7 +199,7 @@ class Route extends Handler {
 }
 
 class InitialRoute extends Route {
-  processMatch() {
+  routeMatch() {
     return true;
   }
 
@@ -230,7 +230,6 @@ class NotFoundRoute extends Handler {
 }
 
 class RedirectRoute extends Handler {
-
   constructor(options) {
     super(options);
     options = options || {};
