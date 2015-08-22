@@ -10,14 +10,14 @@ var Response = riot.router._.Response;
 
 describe('riot.router', function() {
   riot.router.start();
-  
+
   it('can handle riot routes', function() {
     riot.router.route(new Route({tag: 'user', path: '/user/:id'}));
     riot.route('/user/123');
     assert.equal(riot.router.current.matches[0].tag, 'user');
     assert.equal(riot.router.current.uri, '/user/123');
   });
-  
+
 });
 
 describe('riot.router.Route', function() {
@@ -32,7 +32,7 @@ describe('riot.router.Route', function() {
     assert.equal(matcher.route, route);
     assert.equal(matcher.params.id, '123');
   });
-  
+
   it('can handle not found routes', function() {
     var route = new Route().routes([
       new Route({tag: 'user', path: '/user/:id'}),
@@ -45,7 +45,7 @@ describe('riot.router.Route', function() {
     var matcher = response.get(1);
     assert.equal(matcher.tag, 'not-found');
   });
-  
+
   it('can handle default routes', function() {
     var route = new Route({path: 'user'}).routes([
       new DefaultRoute({tag: 'user-default'}),

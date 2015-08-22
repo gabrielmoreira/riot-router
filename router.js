@@ -1,4 +1,4 @@
-var riot = require('riot');  
+var riot = require('riot');
 var extend = require('extend');
 var error = console && console.error || function() {};
 
@@ -16,7 +16,7 @@ class Router {
   route(handler) {
     this.handler = handler;
   }
-  
+
   routes(routes) {
     this.route(new Route().routes(routes));
   }
@@ -230,7 +230,7 @@ class NotFoundRoute extends Handler {
 }
 
 class RedirectRoute extends Handler {
-  
+
   constructor(options) {
     super(options);
     options = options || {};
@@ -239,7 +239,7 @@ class RedirectRoute extends Handler {
     this.pattern = "(^/?)" + this.from + "(/|$)";
     this.regex = new RegExp(this.pattern);
   }
-  
+
   process(request, response) {
     var uri = request.uri.replace(this.regex, "$1" + this.to + "$2");
     if (uri !== request.uri) {
@@ -249,7 +249,7 @@ class RedirectRoute extends Handler {
       request.uri = uri;
     }
   }
-  
+
 }
 
 class DefaultRoute extends Handler {
@@ -317,9 +317,9 @@ riot.tag('route', '<router-content></router-content>', function(opts) {
     if (this.instance)
       this.instance.forEach(function(instance) {
         instance.unmount(true);
-      });    
+      });
   }
-  
+
   this.mountTag = function(tag, api) {
     this.unmountTag();
     if (tag) {
