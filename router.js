@@ -28,6 +28,7 @@ class Router {
   process() {
     var params = Array.prototype.slice.call(arguments);
     var context = new Context(params.join("/"));
+    if (!this.rootContext) this.rootContext = context;
     this.processRequest(context);
     return context;
   }
@@ -44,6 +45,7 @@ class Router {
     var {request, response} = context;
     if (!response.redirectTo) {
       this.current = response;
+      this.rootContext = null;
       this.trigger('route:updated', response);
       return context;
     }
@@ -54,8 +56,13 @@ class Router {
   }
 
   processRedirect(context) {
-    context.redirectTo(context.response.redirectTo);
-    return this.processRequest(context);
+    var uri = context.response.redirectTo;
+    this.rootContext.addRedirect(uri);
+    this.navigateTo(uri);
+  }
+
+  navigateTo(uri) {
+    riot.route(uri);
   }
 
   processInterceptors(context, preInterceptors, postInterceptors) {
@@ -95,13 +102,12 @@ class Context {
     this.redirectStack = [];
   }
 
-  redirectTo(uri) {
+  addRedirect(uri) {
     if (this.redirectStack.indexOf(uri) > -1)
       throw new Error("Cyclic redirection to " + uri + ". Stack = " + this.redirectStack);
     this.redirectStack.push(uri);
-    this.request = new Request(uri);
-    this.response = new Response(this.request);
   }
+
 }
 
 class Handler {
@@ -243,9 +249,8 @@ class RedirectRoute extends Handler {
     var uri = request.uri.replace(this.regex, "$1" + this.to + "$2");
     if (uri !== request.uri) {
       var parent = request.parentUri || "";
-      // Rewrite response.uri & request.uri
-      response.uri = parent + uri;
-      request.uri = uri;
+      response.redirectTo = parent + uri;
+      return true;
     }
   }
 

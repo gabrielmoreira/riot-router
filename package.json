@@ -16,13 +16,15 @@
     "mocha": "^2.2.5",
     "node-libs-browser": "^0.5.2",
     "riot": "^2.2.2-beta",
-    "webpack": "^1.10.1"
+    "webpack": "^1.10.1",
+    "webpack-dev-server": "^1.10.1"
   },
   "scripts": {
     "test": "mocha",
     "test:watch": "mocha --watch",
     "watch": "webpack --watch router.js lib/router.js",
     "build": "webpack --devtool source-maps router.js lib/router.js && COMPRESS=1 webpack --devtool source-maps router.js lib/router.min.js",
+    "start": "webpack-dev-server",
     "prepublish": "npm run build"
   },
   "repository": {

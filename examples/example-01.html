@@ -178,8 +178,7 @@
       <div class="ui segment">Page '{riot.router.current.uri}' not found! </div>
     </not-found>
   </script>
-  <script src="//cdn.jsdelivr.net/riot/2.2/riot.min.js"></script>
-  <script src="//cdn.jsdelivr.net/riot/2.2/compiler.min.js"></script>
+  <script src="../node_modules/riot/riot+compiler.min.js"></script>
   <script src="../lib/router.js"></script>
 
   <script>
@@ -222,7 +221,10 @@
        ]),
       new NotFoundRoute({tag: 'not-found'}),
       new RedirectRoute({from: 'company', to: 'about'}),
-      new RedirectRoute({from: 'u', to: 'users/user'})
+      new RedirectRoute({from: 'u', to: 'users/user'}),
+      new RedirectRoute({from: 'a', to: 'b'}),
+      new RedirectRoute({from: 'b', to: 'c'}),
+      new RedirectRoute({from: 'c', to: 'company'}),
     ]);
 
     // Start routing
