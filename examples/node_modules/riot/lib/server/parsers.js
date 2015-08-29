@@ -1,7 +1,7 @@
 var parsers = {
   html: {
     jade: function(html) {
-      return require('jade').render(html, {pretty: true})
+      return require('jade').render(html, {pretty: true, doctype: 'html'})
     }
   },
   css: {},
@@ -10,7 +10,7 @@ var parsers = {
       return js
     },
     livescript: function(js) {
-      return require('LiveScript').compile(js, { bare: true, header: false })
+      return require('livescript').compile(js, { bare: true, header: false })
     },
     typescript: function(js) {
       return require('typescript-simple')(js)
@@ -24,6 +24,8 @@ var parsers = {
   }
 }
 
+// fix 913
+parsers.js.javascript = parsers.js.none
 // 4 the nostalgics
 parsers.js.coffeescript = parsers.js.coffee
 

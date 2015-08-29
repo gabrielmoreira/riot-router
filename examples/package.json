@@ -4,12 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack-dev-server"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "riot": "^2.2.1",
-    "riot-router": "^0.6.1"
+    "riot": "^2.2.4",
+    "riot-router": "^0.6.3"
+  },
+  "devDependencies": {
+    "webpack": "^1.12.0",
+    "webpack-dev-server": "^1.10.1"
   }
 }
