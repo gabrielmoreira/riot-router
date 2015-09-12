@@ -158,6 +158,7 @@ class Route extends Handler {
     this.api = options.api;
     this.path = options.path;
     this.name = options.name;
+    this.updatable = options.updatable;
     this.pathParameterNames = [];
     var path = (this.path || this.name || this.tag || "").replace(/^\//,"");
     this.pattern = "^/?" + path.replace(/:([^/]+)/g, function(ignored, group) {
@@ -319,17 +320,29 @@ riot.tag('route', '<router-content></router-content>', function(opts) {
 
   this.unmountTag = function() {
     if (this.instance)
-      this.instance.forEach(function(instance) {
-        instance.unmount(true);
-      });
+        this.instance.unmount(true);
   }
 
-  this.mountTag = function(tag, api) {
-    this.unmountTag();
-    if (tag) {
-      this.root.replaceChild(document.createElement(tag), this.root.children[0]);
-      this.instance = riot.mount(this.root.children[0], tag, api);
+  this.mountTag = function(tag, api, options) {
+    if (this.canUpdate(tag, api, options)) {
+      this.instance.update(api);
+    } else {
+      this.unmountTag();
+      if (tag) {
+        this.root.replaceChild(document.createElement(tag), this.root.children[0]);
+        this.instance = riot.mount(this.root.children[0], tag, api)[0];
+        this.instanceTag = tag;
+      }
     }
+  }
+
+  this.canUpdate = function(tag, api, options) {
+    if ((!riot.router.config.updatable && !opts.updatable && !options.updatable)
+      || !this.instance
+      || !this.instance.isMounted
+      || this.instanceTag !== tag)
+      return false;
+    return true;
   }
 
   this.updateRoute = function() {
@@ -341,11 +354,12 @@ riot.tag('route', '<router-content></router-content>', function(opts) {
         if (matcher) {
           var params = matcher.params || {};
           var api = extend(true, {}, matcher.api, params, {__router_level: this.level});
-          mount = {tag: matcher.tag, api: api};
+          console.log(matcher);
+          mount = {tag: matcher.tag, api: api, updatable: matcher.route.updatable};
         }
       }
     }
-    this.mountTag(mount.tag, mount.api);
+    this.mountTag(mount.tag, mount.api, mount);
   }.bind(this);
 
   this.__router_tag = 'route';
@@ -365,6 +379,10 @@ router.DefaultRoute = DefaultRoute;
 router.RedirectRoute = RedirectRoute;
 router.NotFoundRoute = NotFoundRoute;
 router._ = {Response: Response, Request: Request};
+
+router.config = {
+  updatable: false
+}
 
 riot.router = router;
 
