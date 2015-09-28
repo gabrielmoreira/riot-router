@@ -354,7 +354,6 @@ riot.tag('route', '<router-content></router-content>', function(opts) {
         if (matcher) {
           var params = matcher.params || {};
           var api = extend(true, {}, matcher.api, params, {__router_level: this.level});
-          console.log(matcher);
           mount = {tag: matcher.tag, api: api, updatable: matcher.route.updatable};
         }
       }
