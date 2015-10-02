@@ -29,11 +29,23 @@
     }
   </style>
   <script>
-    var users = [
-      {id: 123, name: "Gabriel", email: "gabriel@acme.com"},
-      {id: 456, name: "John", email: "john@awesome.com"},
-      {id: 789, name: "Mark", email: "mark@acme.com"}
-    ]
+    function UserService() {
+      var _users = [
+        {id: 123, name: "Gabriel", email: "gabriel@acme.com"},
+        {id: 456, name: "John", email: "john@awesome.com"},
+        {id: 789, name: "Mark", email: "mark@acme.com"}
+      ];
+      this.getUser = function(userId) {
+        var theUserArray = Array.prototype.filter.call(_users, function(user) { return user.id == userId });
+        return theUserArray.length > 0 ? theUserArray[0] : null;
+      };
+      this.getUsers = function() {
+        return _users;
+      };
+      this.filter = function(fn) {
+        return Array.prototype.filter.call(_users, fn);
+      }
+    }
   </script>
 </head>
 <body>
@@ -143,7 +155,7 @@
         <route class="ten wide column" if={userId}/>
       </div>
 
-      this.users = window.users;
+      this.users = window.users.getUsers();
 
       filter() {
         var keyword = this.search.value.toLowerCase();
@@ -165,11 +177,13 @@
     <!-- User detail page fragment -->
     <user>
       <div class="ui segment">
-        <div if={userId === '123'}>123 - John</div>
-        <div if={userId === '456'}>456 - Mark</div>
-        <div if={userId === '789'}>789 - Gabriel</div>
+        <div>{user.id} - {user.name}</div>
       </div>
       this.userId = opts.userId;
+      this.user = window.users.getUser(this.userId);
+      if (this.user === null) {
+        riot.route('#/not-found');
+      }
     </user>
 
     <!-- About page -->
@@ -200,6 +214,8 @@
   <script src="../lib/router.js"></script>
 
   <script>
+    // Initialize the user store
+    window.users = new UserService();
     // Initialize current user
     window.user = localStorage.getItem('user');
 
