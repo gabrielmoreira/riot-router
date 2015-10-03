@@ -28,29 +28,14 @@
       display: block;
     }
   </style>
-  <script>
-    function UserService() {
-      var _users = [
-        {id: 123, name: "Gabriel", email: "gabriel@acme.com"},
-        {id: 456, name: "John", email: "john@awesome.com"},
-        {id: 789, name: "Mark", email: "mark@acme.com"}
-      ];
-      this.getUser = function(userId) {
-        var theUserArray = Array.prototype.filter.call(_users, function(user) { return user.id == userId });
-        return theUserArray.length > 0 ? theUserArray[0] : null;
-      };
-      this.getUsers = function() {
-        return _users;
-      };
-      this.filter = function(fn) {
-        return Array.prototype.filter.call(_users, fn);
-      }
-    }
-  </script>
 </head>
 <body>
+
   <app/>
 
+  <!--
+    App UI
+  -->
   <script type="riot/tag">
     <!-- Login page -->
     <login>
@@ -213,6 +198,32 @@
   <script src="../node_modules/riot/riot+compiler.min.js"></script>
   <script src="../lib/router.js"></script>
 
+  <!--
+    App Services
+  -->
+  <script>
+      function UserService() {
+      var _users = [
+        {id: 123, name: "Gabriel", email: "gabriel@acme.com"},
+        {id: 456, name: "John", email: "john@awesome.com"},
+        {id: 789, name: "Mark", email: "mark@acme.com"}
+      ];
+      this.getUser = function(userId) {
+        var theUserArray = Array.prototype.filter.call(_users, function(user) { return user.id == userId });
+        return theUserArray.length > 0 ? theUserArray[0] : null;
+      };
+      this.getUsers = function() {
+        return _users;
+      };
+      this.filter = function(fn) {
+        return Array.prototype.filter.call(_users, fn);
+      }
+    }
+  </script>
+
+  <!--
+    Page initialization
+  -->
   <script>
     // Initialize the user store
     window.users = new UserService();
@@ -263,7 +274,7 @@
 
     // Start routing
     riot.router.start();
+
   </script>
 </body>
 </html>
-
