@@ -10,7 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "riot": "^2.2.4",
-    "riot-router": "^0.7.0"
+    "riot-router": "^0.7.1"
   },
   "devDependencies": {
     "webpack": "^1.12.0",
