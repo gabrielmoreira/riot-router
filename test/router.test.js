@@ -1,5 +1,5 @@
-var assert = require('assert'), 
-    helper = require('./helper.js'),
+var assert = require('assert'),
+    helper = require('./support/helper'),
     riot = helper.riot;
 
 var Route = riot.router.Route;
@@ -8,19 +8,18 @@ var DefaultRoute = riot.router.DefaultRoute;
 var Request = riot.router._.Request;
 var Response = riot.router._.Response;
 
-describe('riot.router', function() {
-  riot.router.start();
 
+describe('riot.router', function() {
   it('can handle riot routes', function() {
     riot.router.route(new Route({tag: 'user', path: '/user/:id'}));
     riot.route('/user/123');
     assert.equal(riot.router.current.matches[0].tag, 'user');
     assert.equal(riot.router.current.uri, '/user/123');
   });
-
 });
 
 describe('riot.router.Route', function() {
+
   it('can extract path parameters', function() {
     var route = new Route({tag: 'user', path: '/user/:id'});
     var request = new Request('/user/123');
@@ -71,7 +70,7 @@ describe('riot.router.Route', function() {
     assert.equal(matcher.tag, 'user-default');
   });
 
-  it('can intercept & redirect route', function() {
+  it('can intercept & redirect route', function(done) {
     var userIsLogged = false;
     riot.router.use(function(request, response, next) {
       try {
@@ -81,14 +80,22 @@ describe('riot.router.Route', function() {
           response.redirectTo = '/redirected';
       }
     });
+    riot.router.exec();
     riot.router.routes([
       new Route({tag: 'user', path: '/user/:id', secure: true}),
       new Route({tag: 'redirected'})
     ]);
     var response = riot.route('/user/123');
-    assert.equal('/redirected', riot.router.current.uri);
-    assert.equal('redirected', riot.router.current.get(1).tag);
-  })
+    riot.router.on('route:updated', function () {
+      try {
+        assert.equal('/redirected', riot.router.current.uri);
+        assert.equal('redirected', riot.router.current.get(1).tag);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+  });
 
   it('can extract multiple path parameters', function() {
     var route = new Route({tag: 'user', path: '/user/:id/:name'});
@@ -103,3 +110,4 @@ describe('riot.router.Route', function() {
     assert.equal(matcher.params.name, 'Gabriel');
   });
 });
+

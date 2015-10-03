@@ -160,7 +160,7 @@ class Route extends Handler {
     this.name = options.name;
     this.updatable = options.updatable;
     this.pathParameterNames = [];
-    var path = (this.path || this.name || this.tag || "").replace(/^\//,"");
+    var path = this.getPath().replace(/^\//,"");
     this.pattern = "^/?" + path.replace(/:([^/]+)/g, function(ignored, group) {
       this.pathParameterNames.push(group);
       return "([^/]+)";
@@ -172,11 +172,11 @@ class Route extends Handler {
     var redirectRoutes = routes.filter(function(r) { return r instanceof RedirectRoute; });
     var defaultRoutes = routes.filter(function(r) { return r instanceof DefaultRoute; });
     var notFoundRoutes = routes.filter(function(r) { return r instanceof NotFoundRoute; });
-    var otherRoutes = routes.filter(function(r) { return redirectRoutes.indexOf(r) === -1 
+    var otherRoutes = routes.filter(function(r) { return redirectRoutes.indexOf(r) === -1
                                                       &&  defaultRoutes.indexOf(r) === -1
                                                       && notFoundRoutes.indexOf(r) === -1; });
-    if (notFoundRoutes.length > 1) error("Can't use more than one NotFoundRoute per route. --> " + (this.name || this.path || this.tag));
-    if (defaultRoutes.length > 1) error("Can't use more than one DefaultRoute per route. --> " + (this.name || this.path || this.tag));
+    if (notFoundRoutes.length > 1) error("Can't use more than one NotFoundRoute per route. --> " + this.getPath());
+    if (defaultRoutes.length > 1) error("Can't use more than one DefaultRoute per route. --> " + this.getPath());
     this._routes = [].concat(redirectRoutes).concat(otherRoutes).concat(defaultRoutes).concat(notFoundRoutes);
     return this;
   }
@@ -202,6 +202,10 @@ class Route extends Handler {
 
   processRoutes(request, response, matcher) {
     return super.processRoutes(super.createRequest(request, matcher), response, this._routes);
+  }
+
+  getPath() {
+    return this.name || this.path || (typeof this.tag === 'string' ? this.tag : '');
   }
 }
 
@@ -318,12 +322,26 @@ riot.tag('route', '<router-content></router-content>', function(opts) {
     return level;
   }.bind(this);
 
+  this.normalizeTag = function(tag, api, options) {
+    var result = tag(api, options);
+    if (typeof result === 'string') {
+      tag = result;
+    } else  {
+      tag = result.tag || tag;
+      api = result.api || api;
+    }
+    return [tag, api, options];
+  }
+
   this.unmountTag = function() {
     if (this.instance)
         this.instance.unmount(true);
   }
 
   this.mountTag = function(tag, api, options) {
+    if (typeof tag === 'function') {
+      [tag, api, options] = this.normalizeTag(tag, api, options);
+    }
     if (this.canUpdate(tag, api, options)) {
       this.instance.update(api);
     } else {
