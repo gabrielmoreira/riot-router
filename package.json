@@ -2,14 +2,13 @@
   "name": "examples",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server"
   },
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "riot": "^2.2.4",
-    "riot-router": "^0.7.2"
+  "devDependencies": {
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.0"
   }
 }

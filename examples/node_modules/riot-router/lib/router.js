@@ -83,7 +83,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	
 	  Router.prototype.routes = function routes(_routes) {
-	    this.route(new Route().routes(_routes));
+	    this.route(new InitialRoute().routes(_routes));
 	  };
 	
 	  Router.prototype.use = function use(interceptor) {
@@ -92,7 +92,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  Router.prototype.process = function process() {
 	    var params = Array.prototype.slice.call(arguments);
-	    var context = new Context(params.join("/"));
+	    var uri = params.join("/");
+	    if (uri[0] !== '/') uri = "/" + uri; // handle '#any' as '#/any'
+	    var context = new Context(uri);
 	    if (!this.rootContext) this.rootContext = context;
 	    this.processRequest(context);
 	    return context;
@@ -285,7 +287,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	
 	  Route.prototype.processRoutes = function processRoutes(request, response, matcher) {
-	    return _Handler.prototype.processRoutes.call(this, _Handler.prototype.createRequest.call(this, request, matcher), response, this._routes);
+	    return _Handler.prototype.processRoutes.call(this, this.createRequest(request, matcher), response, this._routes);
 	  };
 	
 	  Route.prototype.getPath = function getPath() {
@@ -303,14 +305,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    _Route.apply(this, arguments);
 	  }
-	
-	  InitialRoute.prototype.routeMatch = function routeMatch() {
-	    return true;
-	  };
-	
-	  InitialRoute.prototype.processRoutes = function processRoutes(request, response, matcher) {
-	    return _Route.prototype.processRoutes.call(this, request, response, this._routes);
-	  };
 	
 	  return InitialRoute;
 	})(Route);

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Router Simple Sample</title>
+  </head>
+
+  <body>
+    <!--
+      App
+    -->
+    <app></app>
+
+    <!--
+      App UI - external tags
+    -->
+    <script type="riot/tag" src="some-tags.html"></script>
+
+    <!--
+      App UI - inline tags
+    -->
+    <script type="riot/tag">
+      <hello>
+        <span>Hello!</span>
+      </hello>
+    </script>
+
+    <!-- Riot -->
+    <script src="node_modules/riot/riot+compiler.min.js"></script>
+    <script src="node_modules/riot-router/lib/router.js"></script>
+
+    <!--
+      Page initialization
+    -->
+    <script>
+      // Compile all tags
+      riot.compile(function() {
+
+        // Mount all Riot tags.
+        riot.mount('*');
+
+        // My app routes
+        var
+          Route = riot.router.Route,
+          DefaultRoute = riot.router.DefaultRoute,
+          NotFoundRoute = riot.router.NotFoundRoute,
+          RedirectRoute = riot.router.RedirectRoute;
+
+        riot.router.routes([
+          new Route({tag: 'hello'}),
+          new DefaultRoute({tag: 'home'}),
+          new RedirectRoute({from: 'h', to: 'hello'}),
+          new NotFoundRoute({tag: 'not-found'}),
+        ]);
+
+        // Start routing
+        riot.router.start();
+      });
+    </script>
+  </body>
+
+</html>

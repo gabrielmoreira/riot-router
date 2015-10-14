@@ -1,0 +1,27 @@
+<app>
+  <span>Current riot.router.current.uri = '{riot.router.current.uri}'</span>
+  <menu></menu>
+  <route></route>
+
+  riot.router.on('route:updated', function() {
+    this.update();
+  }.bind(this));
+</app>
+
+<menu>
+  <ul>
+    <li><a href="#">Home #</a></li>
+    <li><a href="#/hello">Hello #/hello</a></li>
+    <li><a href="#/undefined-page">Page not found sample #/undefined-page</a></li>
+    <li><a href="#/h">Redirect #/h to #/hello</a></li>
+  </ul>
+</menu>
+
+<not-found>
+  <span>Page '{ riot.router.current.uri }' not found!</span>
+</not-found>
+
+<home>
+  <span>Home!</span>
+</home>
+

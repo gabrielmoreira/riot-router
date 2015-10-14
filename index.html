@@ -47,6 +47,8 @@ installed from npm.</p>
 <h2>Examples</h2>
 <a href="examples/example-01.html">Application example</a>
 <br/>
+<a href="examples/example-02.html">Simple example</a>
+<br/>
           <br/>
           
 <h2>
@@ -76,9 +78,12 @@ riot.router.<span class="pl-c1">start</span>();</pre></div>
           
 <h2>
 <a id="mounting-routes" class="anchor" href="#mounting-routes" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to mount my route?</h2>
-<div class="highlight hightlight-html"><pre>&lt;route/&gt;
-
-riot.mount('*');
+Use route tag:
+<div class="highlight hightlight-html"><pre>&lt;route/&gt;</pre></div>
+After declaring routes, mount:
+<div class="highlight hightlight-js"><pre>
+riot.mount(<span class="pl-s"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>);
+riot.router.<span class="pl-c1">start</span>();
 </pre></div>
           
 <h2>
