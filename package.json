@@ -1,6 +1,6 @@
 {
   "name": "riot-router",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "A routing solution for Riot",
   "main": "lib/router.min.js",
   "directories": {
@@ -33,7 +33,7 @@
     "watch": "webpack --watch router.js lib/router.js",
     "build": "webpack --devtool source-maps router.js lib/router.js && COMPRESS=1 webpack --devtool source-maps router.js lib/router.min.js",
     "start": "webpack-dev-server",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build && npm test"
   },
   "repository": {
     "type": "git",
