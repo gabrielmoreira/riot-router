@@ -18,7 +18,7 @@ class Router {
   }
 
   routes(routes) {
-    this.route(new Route().routes(routes));
+    this.route(new InitialRoute().routes(routes));
   }
 
   use(interceptor) {
@@ -27,7 +27,9 @@ class Router {
 
   process() {
     var params = Array.prototype.slice.call(arguments);
-    var context = new Context(params.join("/"));
+    var uri = params.join("/");
+    if (uri[0] !== '/') uri = "/" + uri; // handle '#any' as '#/any'
+    var context = new Context(uri);
     if (!this.rootContext) this.rootContext = context;
     this.processRequest(context);
     return context;
@@ -201,7 +203,7 @@ class Route extends Handler {
   }
 
   processRoutes(request, response, matcher) {
-    return super.processRoutes(super.createRequest(request, matcher), response, this._routes);
+    return super.processRoutes(this.createRequest(request, matcher), response, this._routes);
   }
 
   getPath() {
@@ -210,13 +212,7 @@ class Route extends Handler {
 }
 
 class InitialRoute extends Route {
-  routeMatch() {
-    return true;
-  }
 
-  processRoutes(request, response, matcher) {
-    return super.processRoutes(request, response, this._routes);
-  }
 }
 
 class ChildRequest {
