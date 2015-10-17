@@ -26,15 +26,15 @@ var config = {
       libraryTarget: "umd"
    },
    module: {
+      preLoaders: [
+         {test: /\.tag$/, exclude: /(node_modules|bower_components)/, loader: 'tag', query: {compact: 'true'} },
+      ],
       loaders: [
          // JS & JSX
-         {test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader', query: {loose:["es6.classes", "es6.properties.computed"]}},
+         {test: /\.jsx?|\.tag$/, exclude: /node_modules/, loader: 'babel-loader', query: {loose:["es6.classes", "es6.properties.computed"]}},
 
          // JSON
          {test: /\.json$/, exclude: /(node_modules|bower_components)/, loader: 'json'},
-
-         // Riot
-         {test: /\.tag$/, exclude: /(node_modules|bower_components)/, loader: 'tag', query: {compact: 'true'} },
       ]
    },
    plugins: plugins,

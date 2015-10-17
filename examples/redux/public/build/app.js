@@ -72,11 +72,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var store = _interopRequireWildcard(_stores);
 	
-	var _riotRouterLibRouterJs = __webpack_require__(42);
-	
-	var _apiUsersJs = __webpack_require__(40);
-	
-	(0, _apiUsersJs.loadUsers)();
+	var _riotRouterLibRouterJs = __webpack_require__(43);
 	
 	_riot2['default'].router.routes([new _riotRouterLibRouterJs.Route({ path: 'user/:id', tag: 'user' }), new _riotRouterLibRouterJs.DefaultRoute({ tag: 'app' })]);
 	
@@ -1566,24 +1562,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var users = (0, _reduxActions.handleActions)({
 	
-	  ADD_USER: function ADD_USER(state, action) {
+	  ADD_USER: function ADD_USER(state, _ref) {
+	    var payload = _ref.payload;
 	    return {
-	      users: [].concat(_toConsumableArray(state.users), [{ name: action.payload.name, id: createId() }])
+	      users: [{ name: payload.name, id: createId() }].concat(_toConsumableArray(state.users))
 	    };
 	  },
 	
-	  REMOVE_USER_BY_ID: function REMOVE_USER_BY_ID(state, action) {
+	  REMOVE_USER_BY_ID: function REMOVE_USER_BY_ID(state, _ref2) {
+	    var payload = _ref2.payload;
 	    return { users: state.users.filter(function (user) {
-	        return user.id !== action.payload.id;
+	        return user.id !== payload.id;
 	      }) };
 	  },
 	
-	  LOAD_USERS: function LOAD_USERS(state, _ref) {
-	    var payload = _ref.payload;
+	  LOAD_USERS: function LOAD_USERS(state, _ref3) {
+	    var payload = _ref3.payload;
 	    return payload;
 	  },
 	
-	  REMOVE_ALL_USERS: function REMOVE_ALL_USERS() {
+	  CLEAR_USERS: function CLEAR_USERS() {
 	    return { users: [] };
 	  }
 	
@@ -3960,52 +3958,58 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	__webpack_require__(39);
 	
-	__webpack_require__(43);
+	__webpack_require__(42);
 
 /***/ },
 /* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var riot = __webpack_require__(1);
 	
-	riot.tag('app', '<users></users>', function(opts) {
-	
-	});
+	riot.tag('app', '<users></users>', function (opts) {});
 
 /***/ },
 /* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+	
+	var _stores = __webpack_require__(4);
+	
+	var stores = _interopRequireWildcard(_stores);
+	
+	var _apiUsersJs = __webpack_require__(40);
+	
 	var riot = __webpack_require__(1);
 	
-	var store = __webpack_require__(4);
-	var loadUsers = __webpack_require__(40).loadUsers;
+	(0, _apiUsersJs.loadUsers)();
 	
-	riot.tag('users', '<h1>Users</h1><div><button onclick="{loadUsers}">Load users</button><button onclick="{removeAll}">Remove all</button></div><br><div><input name="userName" placeholder="Add an user name" onkeydown="{this.keydown}"></div><ul><li each="{user in this.users}"><a href="#/user/{user.id}">{user.name}</a>&nbsp;<a href="#" onclick="{this.remove}" data-user="{user.id}">x</a></li></ul>', function(opts) {
+	riot.tag('users', '<h1>Users</h1><div><button onclick="{loadUsers}">Load users</button><button onclick="{clear}">Clear</button></div><br><div><input name="userName" placeholder="Add an user name" onkeydown="{this.keydown}"></div><ul><li each="{user in this.users}"><a href="#/user/{user.id}">{user.name}</a>&nbsp;<a href="#" onclick="{this.remove}" data-user="{user.id}">x</a></li></ul>', function (opts) {
 	
-		this.keydown = function(e) {
+		this.keydown = (function (e) {
 			if (e.keyCode === 13) {
-				store.dispatch({ type: 'ADD_USER', payload: {name: this.userName.value }});
+				store.dispatch({ type: 'ADD_USER', payload: { name: this.userName.value } });
 				this.userName.value = "";
 			}
 			return true;
-		}.bind(this);
+		}).bind(this);
 	
-		this.remove = function(e) {
-			store.dispatch({ type: 'REMOVE_USER_BY_ID', payload: {id: e.target.getAttribute('data-user') }});
-		}.bind(this);
+		this.remove = (function (e) {
+			store.dispatch({ type: 'REMOVE_USER_BY_ID', payload: { id: e.target.getAttribute('data-user') } });
+		}).bind(this);
 	
-		this.removeAll = function() {
-			store.dispatch({ type: 'REMOVE_ALL_USERS'});
-		}.bind(this);
+		this.clear = (function () {
+			store.dispatch({ type: 'CLEAR_USERS' });
+		}).bind(this);
 	
 		this.mixin('store');
 		this.trackStateFromStore('users');
-		this.loadUsers = loadUsers;
-	
-	
+		this.loadUsers = _apiUsersJs.loadUsers;
 	});
-
 
 /***/ },
 /* 40 */
@@ -4438,6 +4442,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var riot = __webpack_require__(1);
+	
+	riot.tag('user', '<h1 if="{this.user}">Showing user: {this.user.name}</h1><h1 if="{!this.user}">Loading user...</h1>', function (opts) {
+	
+		this.mixin('store');
+		this.trackStateFromStore('users');
+		this.on('update', (function () {
+			this.user = this.users.filter(function (user) {
+				return opts.id == user.id;
+			})[0];
+		}).bind(this));
+	});
+
+/***/ },
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function webpackUniversalModuleDefinition(root, factory) {
@@ -5062,24 +5085,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	;
 	//# sourceMappingURL=router.js.map
-
-/***/ },
-/* 43 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var riot = __webpack_require__(1);
-	
-	riot.tag('user', '<h1 if="{this.user}">Showing user: {this.user.name}</h1><h1 if="{!this.user}">Loading user...</h1>', function(opts) {
-	
-		this.mixin('store');
-		this.trackStateFromStore('users');
-		this.on('update', function() {
-			this.user = this.users.filter(function(user) {
-				return opts.id == user.id;
-			})[0];
-		}.bind(this));
-	
-	});
 
 /***/ }
 /******/ ])

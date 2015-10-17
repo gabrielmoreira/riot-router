@@ -7,16 +7,16 @@ function createId() {
 
 export var users = handleActions({
 
-  ADD_USER: (state, action) => ({
-    users: [...state.users, {name: action.payload.name, id: createId()}]
+  ADD_USER: (state, {payload}) => ({
+    users: [{name: payload.name, id: createId()}, ...state.users]
   }),
 
-  REMOVE_USER_BY_ID: (state, action) => ({users: state.users.filter(function(user) {
-    return user.id !== action.payload.id;
+  REMOVE_USER_BY_ID: (state, {payload}) => ({users: state.users.filter(function(user) {
+    return user.id !== payload.id;
   })}),
 
   LOAD_USERS: (state, {payload}) => (payload),
 
-  REMOVE_ALL_USERS: () => ({users: []})
+  CLEAR_USERS: () => ({users: []})
 
 }, {users: []});

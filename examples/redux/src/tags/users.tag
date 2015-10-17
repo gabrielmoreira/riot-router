@@ -1,9 +1,11 @@
-var store = require('../stores');
-var loadUsers = require('../api/users.js').loadUsers;
+import * as stores from '../stores';
+import {loadUsers} from '../api/users.js';
+
+loadUsers();
 
 <users>
 	<h1>Users</h1>
-	<div><button onclick={loadUsers}>Load users</button> <button onclick={removeAll}>Remove all</button></div><br/>
+	<div><button onclick={loadUsers}>Load users</button> <button onclick={clear}>Clear</button></div><br/>
 	<div><input name="userName" placeholder="Add an user name" onkeydown={this.keydown}></div>
 	<ul>
 		<li each={user in this.users}><a href="#/user/{user.id}">{user.name}</a>&nbsp;<a href="#" onclick={this.remove} data-user={user.id}>x</a></li>
@@ -21,8 +23,8 @@ var loadUsers = require('../api/users.js').loadUsers;
 		store.dispatch({ type: 'REMOVE_USER_BY_ID', payload: {id: e.target.getAttribute('data-user') }});
 	}
 
-	removeAll() {
-		store.dispatch({ type: 'REMOVE_ALL_USERS'});
+	clear() {
+		store.dispatch({ type: 'CLEAR_USERS'});
 	}
 
 	this.mixin('store');
