@@ -74,7 +74,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _riotRouterLibRouterJs = __webpack_require__(42);
 	
-	_riot2['default'].router.routes([new _riotRouterLibRouterJs.DefaultRoute({ tag: 'hello' })]);
+	var _apiUsersJs = __webpack_require__(40);
+	
+	(0, _apiUsersJs.loadUsers)();
+	
+	_riot2['default'].router.routes([new _riotRouterLibRouterJs.Route({ path: 'user/:id', tag: 'user' }), new _riotRouterLibRouterJs.DefaultRoute({ tag: 'app' })]);
 	
 	// Mount all Riot tags.
 	_riot2['default'].mount('*');
@@ -3955,6 +3959,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	__webpack_require__(38);
 	
 	__webpack_require__(39);
+	
+	__webpack_require__(43);
 
 /***/ },
 /* 38 */
@@ -3975,7 +3981,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var store = __webpack_require__(4);
 	var loadUsers = __webpack_require__(40).loadUsers;
 	
-	riot.tag('users', '<h1>Users</h1><div><button onclick="{loadUsers}">Load users</button><button onclick="{removeAll}">Remove all</button></div><br><div><input name="userName" placeholder="Add an user name" onkeydown="{this.keydown}"></div><ul><li each="{user in this.users}">{user.name} <a href="#" onclick="{this.remove}" data-user="{user.id}">x</a></li></ul>', function(opts) {
+	riot.tag('users', '<h1>Users</h1><div><button onclick="{loadUsers}">Load users</button><button onclick="{removeAll}">Remove all</button></div><br><div><input name="userName" placeholder="Add an user name" onkeydown="{this.keydown}"></div><ul><li each="{user in this.users}"><a href="#/user/{user.id}">{user.name}</a>&nbsp;<a href="#" onclick="{this.remove}" data-user="{user.id}">x</a></li></ul>', function(opts) {
 	
 		this.keydown = function(e) {
 			if (e.keyCode === 13) {
@@ -4038,8 +4044,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  store.dispatch({ type: 'LOAD_USERS', payload: users });
 	  return users;
 	}
-	
-	window.loadUsers = loadUsers;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(41)))
 
 /***/ },
@@ -5058,6 +5062,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	;
 	//# sourceMappingURL=router.js.map
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var riot = __webpack_require__(1);
+	
+	riot.tag('user', '<h1 if="{this.user}">Showing user: {this.user.name}</h1><h1 if="{!this.user}">Loading user...</h1>', function(opts) {
+	
+		this.mixin('store');
+		this.trackStateFromStore('users');
+		this.on('update', function() {
+			this.user = this.users.filter(function(user) {
+				return opts.id == user.id;
+			})[0];
+		}.bind(this));
+	
+	});
 
 /***/ }
 /******/ ])

@@ -16,5 +16,3 @@ export function loadUsers() {
   store.dispatch({type: 'LOAD_USERS', payload: users});
   return users;
 }
-
-window.loadUsers = loadUsers;

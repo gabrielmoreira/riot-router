@@ -6,7 +6,7 @@ var loadUsers = require('../api/users.js').loadUsers;
 	<div><button onclick={loadUsers}>Load users</button> <button onclick={removeAll}>Remove all</button></div><br/>
 	<div><input name="userName" placeholder="Add an user name" onkeydown={this.keydown}></div>
 	<ul>
-		<li each={user in this.users}>{user.name} <a href="#" onclick={this.remove} data-user={user.id}>x</a></li>
+		<li each={user in this.users}><a href="#/user/{user.id}">{user.name}</a>&nbsp;<a href="#" onclick={this.remove} data-user={user.id}>x</a></li>
 	</ul>
 
 	keydown(e) {
