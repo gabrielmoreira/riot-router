@@ -11,11 +11,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "lodash": "^3.10.1",
     "redux": "^3.0.2",
     "redux-actions": "^0.8.0",
     "redux-logger": "^2.0.4",
     "redux-promise": "^0.5.0",
     "redux-thunk": "^1.0.0",
+    "reselect": "^2.0.0",
     "riot": "^2.2.4",
     "riot-router": "^0.7.2",
     "whatwg-fetch": "^0.10.0"

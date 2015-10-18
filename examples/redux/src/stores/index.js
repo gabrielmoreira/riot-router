@@ -9,3 +9,5 @@ var createStoreWithMiddleware = applyMiddleware(thunk, promise, logger)(createSt
 var store = createStoreWithMiddleware(users);
 
 module.exports = store;
+
+window.store = store;

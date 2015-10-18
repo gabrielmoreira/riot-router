@@ -1,26 +1,53 @@
 import riot from 'riot';
 import * as store from '../stores';
+import _ from 'lodash/object';
 
 var StoreMixin = {
 	getStore() {
+		return store;
+	},
+
+	getState() {
 		return store.getState();
 	},
 
 	onStoreUpdate(attr, fn) {
-		var lastState = store.getState()[attr];
+		var lastState = _.get(store.getState(), attr);
 		store.subscribe(function() {
-			var state = store.getState()[attr];
-			if (lastState !== state) fn(state);
+			var state = _.get(store.getState(), attr);
+			if (this.storeStateChanged(lastState, state)) fn(state);
 			lastState = state;
-		});
+		}.bind(this));
 	},
 
-	trackStateFromStore(attr) {
+	trackStore(attr, target) {
+		target = target || attr;
 		this.onStoreUpdate(attr, function(state) {
-			this[attr] = state;
+			_.set(this, target, state);
 			this.update();
 		}.bind(this));
-		this[attr] = store.getState()[attr];
+		_.set(this, target, _.get(store.getState(), attr));
+	},
+
+	onSelectorUpdate(selector, fn) {
+		var lastState = selector(store.getState());
+		store.subscribe(function () {
+			var state = selector(store.getState());
+			if (lastState !== state) fn(state);
+			lastState = state;
+		}.bind(this));
+	},
+
+	trackSelector(selector, target) {
+		this.onSelectorUpdate(selector, function(state) {
+			_.set(this, target, state);
+			this.update();
+		}.bind(this));
+		_.set(this, target, selector(store.getState()));
+	},
+
+	storeStateChanged(previous, current) {
+		return previous !== current;
 	}
 }
 

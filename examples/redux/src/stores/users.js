@@ -11,9 +11,10 @@ export var users = handleActions({
     users: [{name: payload.name, id: createId()}, ...state.users]
   }),
 
-  REMOVE_USER_BY_ID: (state, {payload}) => ({users: state.users.filter(function(user) {
-    return user.id !== payload.id;
-  })}),
+  REMOVE_USER_BY_ID: (state, {payload}) =>
+    ({users: state.users.filter(
+      (user) => (user.id !== payload.id)
+    )}),
 
   LOAD_USERS: (state, {payload}) => (payload),
 
