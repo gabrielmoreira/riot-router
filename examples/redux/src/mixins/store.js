@@ -1,5 +1,5 @@
 import riot from 'riot';
-import * as store from '../stores';
+import store from '../stores';
 import _ from 'lodash/object';
 
 var StoreMixin = {

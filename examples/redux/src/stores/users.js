@@ -1,14 +1,10 @@
 import {handleActions} from 'redux-actions';
-
-var ids = 0;
-function createId() {
-    return "user-" + (ids++);
-}
+import uuid from 'uuid';
 
 export var users = handleActions({
 
   ADD_USER: (state, {payload}) => ({
-    users: [{name: payload.name, id: createId()}, ...state.users]
+    users: [{name: payload.name, id: uuid()}, ...state.users]
   }),
 
   REMOVE_USER_BY_ID: (state, {payload}) =>

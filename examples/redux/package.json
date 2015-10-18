@@ -20,6 +20,7 @@
     "reselect": "^2.0.0",
     "riot": "^2.2.4",
     "riot-router": "^0.7.2",
+    "uuid": "^2.0.1",
     "whatwg-fetch": "^0.10.0"
   },
   "description": "",

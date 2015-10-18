@@ -1,7 +1,8 @@
+import * as store from './stores';
 import riot from 'riot';
 import './mixins';
 import './tags';
-import * as store from './stores/';
+
 import {Route, DefaultRoute, NotFoundRoute, RedirectRoute} from 'riot-router/lib/router.js';
 
 riot.router.routes([

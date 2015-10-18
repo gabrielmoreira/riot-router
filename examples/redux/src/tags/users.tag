@@ -1,6 +1,4 @@
-import * as stores from '../stores';
 import * as userActions from '../actions/users.js';
-import {getUsers} from '../selectors/users.js';
 
 userActions.loadUsers();
 
