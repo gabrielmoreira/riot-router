@@ -3,11 +3,18 @@ import * as userActions from '../actions/users.js';
 userActions.loadUsers();
 
 <users>
-	<h1>Users</h1>
-	<div><button onclick={userActions.loadUsers}>Load users</button> <button onclick={clear}>Clear</button></div><br/>
+	<h2>Users</h2>
+	<div>
+		<button onclick={userActions.loadUsers}>Load users</button>
+		<button onclick={clear}>Clear</button>
+	</div>
+	<br/>
 	<div><input name="userName" placeholder="Add an user name" onkeydown={this.keydown}></div>
 	<ul>
-		<li each={user in this.users}><a href="#/user/{user.id}">{user.name}</a>&nbsp;<a href="#" onclick={this.remove} data-user={user.id}>x</a></li>
+		<li each={user in this.users}>
+			<a href="#/user/{user.id}">{user.name}</a>&nbsp;
+			<a href="#" onclick={this.remove} data-user={user.id}>remove</a>
+		</li>
 	</ul>
 
 	keydown(e) {
@@ -29,5 +36,4 @@ userActions.loadUsers();
 	this.mixin('store');
 	this.trackStore('users');
 	this.userActions = userActions;
-
 </users>

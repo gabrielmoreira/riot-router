@@ -11,8 +11,6 @@ export function loadUsers() {
           name: user.name.first + " " + user.name.last
         };
       })
-    }).then((users) => {
-      return {users: users};
     });
   store.dispatch({type: 'LOAD_USERS', payload: users});
   return users;
