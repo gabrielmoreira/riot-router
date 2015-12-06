@@ -19,9 +19,14 @@ var config = {
     "riot": "riot"
   },
   module: {
-    loaders: [
-      {test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader', query: {loose:["es6.classes", "es6.properties.computed"]}},
-    ]
+    loaders: [{
+      test: /\.jsx?$/,
+      exclude: /node_modules/,
+      loader: 'babel-loader',
+      query: {
+        cacheDirectory: true
+      }
+    }]
   },
   plugins: plugins
 };

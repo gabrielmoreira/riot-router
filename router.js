@@ -346,6 +346,7 @@ riot.tag('route', '<router-content></router-content>', function(opts) {
         this.root.replaceChild(document.createElement(tag), this.root.children[0]);
         this.instance = riot.mount(this.root.children[0], tag, api)[0];
         this.instanceTag = tag;
+        this.instanceApi = api;
       }
     }
   }
@@ -372,18 +373,22 @@ riot.tag('route', '<router-content></router-content>', function(opts) {
         }
       }
     }
-    this.mountTag(mount.tag, mount.api, mount);
+    if (mount.tag)
+      this.mountTag(mount.tag, mount.api, mount);
+    else
+      this.unmountTag();
   }.bind(this);
 
   this.__router_tag = 'route';
   this.level = this.calculateLevel(this);
   riot.router.on('route:updated', this.updateRoute);
-
   this.on('unmount', function() {
     riot.router.off('route:updated', this.updateRoute);
     this.unmountTag();
   }.bind(this));
-
+  this.on('mount', function() {
+    this.updateRoute();
+  }.bind(this));
 });
 
 var router = new Router();

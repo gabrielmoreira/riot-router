@@ -162,14 +162,23 @@
     <!-- User detail page fragment -->
     <user>
       <div class="ui segment">
+        <route />
         <div>{user.id} - {user.name}</div>
       </div>
-      this.userId = opts.userId;
-      this.user = window.users.getUser(this.userId);
-      if (this.user === null) {
-        riot.route('#/not-found');
+      updateContent(opts) {
+        this.userId = opts.userId;
+        this.user = window.users.getUser(this.userId);
+        if (this.user === null) {
+          riot.route('/not-found');
+        }
       }
+      this.on('update', this.updateContent);
+      this.updateContent(opts);
     </user>
+
+    <hello>
+      <div>Hello</div>
+    </hello>
 
     <!-- About page -->
     <about>
@@ -260,7 +269,9 @@
       new Route({tag: 'about'}),
       new Route({tag: 'users', updatable:true}).routes([
          new Route({path:'top', tag: 'users-home', api: {text: 'Select a top user'}}),
-         new Route({path: '/user/:userId', tag: 'user'}),
+         new Route({path: '/user/:userId', updatable: true, tag: 'user'}).routes([
+          new DefaultRoute({tag: 'hello'})
+         ]),
          new DefaultRoute({tag: 'users-home', api: {text: 'Select a user'}}),
          new NotFoundRoute({tag: 'not-found'})
        ]),

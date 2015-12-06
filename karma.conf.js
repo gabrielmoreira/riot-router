@@ -7,6 +7,7 @@ module.exports = function(config) {
       'karma-mocha',
       'karma-mocha-reporter',
       'karma-phantomjs-launcher',
+      //'karma-chrome-launcher',
       'karma-webpack',
       'karma-sourcemap-loader',
       'karma-riot'
@@ -14,7 +15,9 @@ module.exports = function(config) {
     files: [
       'test/**/*.test.js'
     ],
-    webpack: extend(require('./webpack.config'), {devtool: 'inline-source-map'}),
+    webpack: extend(require('./webpack.config'), {
+      devtool: 'inline-source-map'
+    }),
     webpackMiddleware: {
       noInfo: true
     },
@@ -22,7 +25,10 @@ module.exports = function(config) {
       'test/*.test.js': ['webpack', 'sourcemap'],
       'test/**/*.test.js': ['webpack', 'sourcemap']
     },
-    browsers: ['PhantomJS'],
+    browsers: [
+      'PhantomJS'//,
+      //'Chrome'
+    ],
     reporters: ['mocha']
   });
 };
