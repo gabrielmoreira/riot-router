@@ -13,7 +13,7 @@ if (process.env.COMPRESS) {
 
 var config = {
   output: {
-    libraryTarget: "umd",
+    libraryTarget: "umd"
   },
   externals: {
     "riot": "riot"
@@ -24,6 +24,7 @@ var config = {
       exclude: /node_modules/,
       loader: 'babel-loader',
       query: {
+        presets: ['es2015'],
         cacheDirectory: true
       }
     }]

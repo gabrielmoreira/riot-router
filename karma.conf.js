@@ -2,21 +2,21 @@ var extend = require('extend');
 
 module.exports = function(config) {
   config.set({
-    frameworks: ['mocha', 'riot'],
+    frameworks: ['mocha'],
     plugins: [
       'karma-mocha',
       'karma-mocha-reporter',
       'karma-phantomjs-launcher',
-      //'karma-chrome-launcher',
       'karma-webpack',
-      'karma-sourcemap-loader',
-      'karma-riot'
+      'karma-sourcemap-loader'
     ],
     files: [
+      'test/support/function-bind.js',
       'test/**/*.test.js'
     ],
     webpack: extend(require('./webpack.config'), {
-      devtool: 'inline-source-map'
+      devtool: 'inline-source-map',
+      externals: {}
     }),
     webpackMiddleware: {
       noInfo: true
@@ -26,8 +26,7 @@ module.exports = function(config) {
       'test/**/*.test.js': ['webpack', 'sourcemap']
     },
     browsers: [
-      'PhantomJS'//,
-      //'Chrome'
+      'PhantomJS'
     ],
     reporters: ['mocha']
   });

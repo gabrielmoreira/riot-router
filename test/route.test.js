@@ -8,15 +8,23 @@ var DefaultRoute = riot.router.DefaultRoute;
 var Request = riot.router._.Request;
 var Response = riot.router._.Response;
 
+riot.tag('need-data', '<span>{ opts.someData }</span>', function (opts) {
+});
+
 
 describe('riot.route', function() {
+  var tag;
+  var someData = 'the data i need';
+
   before(function () {
     var route = document.createElement('route');
+    route.setAttribute('some-data', someData);
     document.body.appendChild(route);
 
-    riot.mount('route');
+    tag = riot.mount('route')[0];
     riot.router.routes([
       new Route({tag: 'static'}),
+      new Route({tag: 'need-data'}),
       new Route({path: '/dynamic', tag: function () { return 'dynamic'; }}),
       new Route({path: '/dynamic-api', tag: function () {
         return {tag: 'dynamic-api', api: {}};
@@ -37,5 +45,10 @@ describe('riot.route', function() {
   it('works with dynamic tags and api', function() {
     riot.route('/dynamic-api');
     assert.ok(document.querySelector('dynamic-api'));
+  });
+
+  it('passes data to the mounted tag', function() {
+    riot.route('/need-data');
+    assert.equal(tag.instance.opts.someData, someData);
   });
 });

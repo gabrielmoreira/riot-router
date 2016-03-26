@@ -85,7 +85,6 @@ describe('riot.router.Route', function() {
       new Route({tag: 'user', path: '/user/:id', secure: true}),
       new Route({tag: 'redirected'})
     ]);
-    var response = riot.route('/user/123');
     riot.router.on('route:updated', function () {
       try {
         assert.equal('/redirected', riot.router.current.uri);
@@ -95,6 +94,7 @@ describe('riot.router.Route', function() {
         done(e);
       }
     });
+    riot.route('/user/123');
   });
 
   it('can extract multiple path parameters', function() {

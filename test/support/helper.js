@@ -1,7 +1,5 @@
 var riot = require('riot');
-
-require('./function-bind');
-require('../../lib/router');
+var router = require('../../router');
 
 riot.router.start();
 

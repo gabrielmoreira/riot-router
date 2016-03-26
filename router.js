@@ -368,7 +368,7 @@ riot.tag('route', '<router-content></router-content>', function(opts) {
         var matcher = response.get(this.level);
         if (matcher) {
           var params = matcher.params || {};
-          var api = extend(true, {}, matcher.api, params, {__router_level: this.level});
+          var api = extend(true, {}, opts, matcher.api, params, {__router_level: this.level});
           mount = {tag: matcher.tag, api: api, updatable: matcher.route.updatable};
         }
       }
