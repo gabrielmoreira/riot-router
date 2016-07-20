@@ -13,6 +13,7 @@ if (process.env.COMPRESS) {
 
 var config = {
   output: {
+    library: 'Router',
     libraryTarget: "umd"
   },
   externals: {

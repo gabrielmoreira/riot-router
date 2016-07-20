@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>Riot App Example 01</title>
   <link rel="stylesheet" href="//cdn.jsdelivr.net/semantic-ui/2/semantic.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
   <style>
     .content.app {
       display: block;
@@ -83,6 +84,7 @@
           {url: '#/users/top', text:'Top Users', icon: 'favorite'},
           {url: '#/users/user/123', text: 'User #123', icon: 'user'},
           {url: '#/users/user/456', text: 'User #456', icon: 'user'},
+          {url: '#/users/user/789?animate=true', text: 'Animate User', icon: 'user'},
         ];
       }
       createRightMenus() {
@@ -165,14 +167,22 @@
         <route />
         <div>{user.id} - {user.name}</div>
       </div>
+
       updateContent(opts) {
+        if (!opts) return;
         this.userId = opts.userId;
+        this.animate = opts.animate === "true";
         this.user = window.users.getUser(this.userId);
         if (this.user === null) {
           riot.route('/not-found');
         }
       }
-      this.on('update', this.updateContent);
+      this.on('update', this.updateContent.bind(this));
+      this.on('updated', function() {
+        var $el = jQuery(this.root).clearQueue();
+        if (this.animate)
+          $el.fadeOut().fadeIn().fadeOut().fadeIn();
+      }.bind(this));
       this.updateContent(opts);
     </user>
 

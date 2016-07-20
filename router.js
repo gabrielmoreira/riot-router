@@ -2,6 +2,21 @@ var riot = require('riot');
 var extend = require('extend');
 var error = console && console.error || function() {};
 
+function customRiotParser(path) {
+  var raw = path.split('?'),
+      uri = raw[0].split('/'),
+      query = raw[1],
+      params = {}
+  if (query) {
+    query.split('&').forEach(function(v) {
+      var c = v.split('=')
+      params[c[0]] = c[1]
+    })
+  }
+  uri.push(params)
+  return uri
+}
+
 class Router {
 
   constructor() {
@@ -27,9 +42,16 @@ class Router {
 
   process() {
     var params = Array.prototype.slice.call(arguments);
-    var uri = params.join("/");
+    var query = {};
+    var uri = params.filter(function(p) {
+      if (typeof(p) !== 'string') {
+        query = p;
+        return false;
+      }
+      return true;
+    }).join("/");
     if (uri[0] !== '/') uri = "/" + uri; // handle '#any' as '#/any'
-    var context = new Context(uri);
+    var context = new Context(new Request(uri, query));
     if (!this.rootContext) this.rootContext = context;
     this.processRequest(context);
     return context;
@@ -87,6 +109,7 @@ class Router {
   }
 
   start() {
+    riot.route.parser(customRiotParser);
     riot.route(this.process);
     riot.route.start();
     this.exec();
@@ -95,6 +118,7 @@ class Router {
   exec() {
     riot.route.exec(this.process);
   }
+
 }
 
 class Context {
@@ -188,8 +212,10 @@ class Route extends Handler {
     if (matcher) {
       var params = {};
       for (var i in this.pathParameterNames) {
-        var name = this.pathParameterNames[i];
-        params[name] = decodeURIComponent(matcher[parseInt(i, 10) + 1]);
+        if (this.pathParameterNames.hasOwnProperty(i)) {
+          var name = this.pathParameterNames[i];
+          params[name] = decodeURIComponent(matcher[parseInt(i, 10) + 1]);
+        }
       }
       return {route: this, tag: this.tag, api: this.api, found: matcher[0], params: params};
     }
@@ -221,6 +247,7 @@ class ChildRequest {
     this.matcher = matcher;
     this.uri = this.request.uri.substring(matcher.found.length);
     this.parentUri = this.request.uri.substring(0, matcher.found.length);
+    this.query = this.request.query;
   }
 }
 
@@ -272,8 +299,9 @@ class DefaultRoute extends Handler {
 }
 
 class Request {
-  constructor(uri) {
+  constructor(uri, query) {
     this.uri = uri;
+    this.query = query;
   }
 }
 
@@ -282,6 +310,7 @@ class Response {
     this.uri = request.uri;
     this.matches = [];
     this.params = {};
+    this.query = request.query;
   }
   add(matcher) {
     this.matches.push(matcher);
@@ -368,7 +397,8 @@ riot.tag('route', '<router-content></router-content>', function(opts) {
         var matcher = response.get(this.level);
         if (matcher) {
           var params = matcher.params || {};
-          var api = extend(true, {}, opts, matcher.api, params, {__router_level: this.level});
+          var query = response.query || {};
+          var api = extend(true, {}, opts, query, matcher.api, params, {__router_level: this.level, query: query});
           mount = {tag: matcher.tag, api: api, updatable: matcher.route.updatable};
         }
       }

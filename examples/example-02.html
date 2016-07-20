@@ -49,6 +49,7 @@
 
         riot.router.routes([
           new Route({tag: 'hello'}),
+          new Route({tag: 'parameters'}),
           new DefaultRoute({tag: 'home'}),
           new RedirectRoute({from: 'h', to: 'hello'}),
           new NotFoundRoute({tag: 'not-found'}),
