@@ -74,6 +74,18 @@
   </script>
 </app>
 
+<home>
+  <div class="uk-grid" data-uk-grid-margin="">
+    <div class="uk-width-1-1 uk-row-first">
+      <h1 class="uk-heading-large">Hello {email}</h1>
+    </div>
+  </div>
+
+  this.bindState({
+    'email': 'user.email'
+  });
+</home>
+
 <users>
   <div class="uk-grid" data-uk-grid-margin="">
     <div class="uk-width-1-1 uk-row-first">
@@ -91,7 +103,7 @@
       <tr each={user in users}>
         <td class='uk-text-capitalize'>
           <img width='48px' class="uk-border-circle" riot-src={user.avatar} alt="">
-          {user.first_name} {user.last_name}
+          <a href="#/app/user/{user.id}">{user.first_name} {user.last_name}</a>
         </td>
       </tr>
     </tbody>
@@ -103,3 +115,22 @@
     this.actions.user.list();
   </script>
 </users>
+
+<user>
+  <div>
+    <h3 class='uk-text-capitalize'>{user.first_name}</h3>
+    <img class="uk-border-circle" riot-src={user.avatar} alt="">
+  </div>
+
+  initialize() {
+    this.actions.user.load(opts.userId);
+    this.bindState({
+      'user': 'users.usersById[' + opts.userId + ']'
+    });
+  }
+
+  this.on('update', function(newOpts) {
+    _.merge(opts, newOpts);
+    this.initialize();
+  }.bind(this));
+</user>

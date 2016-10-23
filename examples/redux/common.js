@@ -15,6 +15,7 @@ function CreateSimpleApp(config) {
         if (payload) event.payload = payload;
         if (meta) event.meta = meta;
         context.store.dispatch(event);
+        console.log(event);
         context.trigger(event.type, event.payload, event.meta, event);
       }
     }
