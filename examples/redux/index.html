@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr" class="uk-height-1-1 uk-notouch">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Redux App Example</title>
+    <!--
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon-precomposed" href="images/apple-touch-icon.png">
+    -->
+    <link rel="stylesheet" href="https://unpkg.com/uikit@2.27.1/dist/css/uikit.min.css">
+  </head>
+  <body class="uk-height-1-1">
+
+    <div riot-tag='route' class='uk-height-1-1'></div>
+
+    <!-- Essencial dependencies -->
+    <!--
+    <script src="https://unpkg.com/riot@2.6.4/riot+compiler.min.js"></script>
+    <script src="https://unpkg.com/riot-router@0.8.1/lib/router.min.js"></script>
+    -->
+    <script src="../../node_modules/riot/riot+compiler.min.js"></script>
+    <script src="../../lib/router.js"></script>
+    <script src="https://unpkg.com/redux@3.6.0/dist/redux.min.js"></script>
+    <script src="https://unpkg.com/riot-state-updater@1.0.0/dist/riot-state-updater.min.js"></script>
+
+    <!-- Application dependencies -->
+    <script src="https://unpkg.com/lodash@4.16.4/lodash.min.js"></script>
+    <script src="https://unpkg.com/jquery@3.1.1/dist/jquery.min.js"></script>
+    <script src="https://unpkg.com/uikit@2.27.1/dist/js/uikit.min.js"></script>
+    <script src="./common.js"></script>
+
+    <!-- Initialization -->
+    <script type="riot/tag" src="tags.html"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
+
