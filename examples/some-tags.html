@@ -14,7 +14,7 @@
     <li><a href="#/hello">Hello #/hello</a></li>
     <li><a href="#/undefined-page">Page not found sample #/undefined-page</a></li>
     <li><a href="#/h">Redirect #/h to #/hello</a></li>
-    <li><a href="#/parameters?a=1&b=2">Show custom parameters #/parameters?a=1&b=2</a></li>
+    <li><a href="#/parameters/abc?a=1&b=2">Show custom parameters #/parameters/abc?a=1&b=2</a></li>
   </ul>
 </menu>
 
@@ -27,6 +27,9 @@
 </home>
 
 <parameters>
-  <div>a{JSON.stringify(riot.router.current)}</div>
+  <div>id={opts.id}</div>
+  <div>a={opts.a}</div>
+  <div>b={opts.b}</div>
+  <pre style='width: 80%'>riot.router.current={JSON.stringify(riot.router.current, null, 2)}</pre>
 </parameters>
 

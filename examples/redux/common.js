@@ -40,6 +40,7 @@ function CreateSimpleApp(config) {
       });
     }
     riot.mount('*');
+    console.log("mounted");
     if (context.routes) {
       if (Object.prototype.toString.call(context.routes) === '[object Array]')
         riot.router.routes(context.routes);
@@ -47,6 +48,7 @@ function CreateSimpleApp(config) {
         riot.router.route(context.routes);
       riot.router.config.updatable = true;
       riot.router.start();
+      console.log("route started");
     }
   }
 

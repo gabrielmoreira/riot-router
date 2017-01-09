@@ -41,14 +41,14 @@
     <!-- Login page -->
     <login>
       <div>
-        <input name="username"/>
+        <input ref="username"/>
         <button onClick={this.login}>Login</button>
       </div>
       login() {
-        window.user = this.username;
+        window.user = this.refs.username;
         localStorage.setItem('user', window.user);
         // Go to home page
-        riot.route('#/');
+        riot.router.navigateTo('#/');
       }
     </login>
 
@@ -56,20 +56,20 @@
       window.user = null;
       localStorage.removeItem('user');
       // Go to login page
-      riot.route('#/login');
+      riot.router.navigateTo('#/login');
     </logout>
 
     <!-- Application -->
     <app class="app">
       <main-menu/>
-      <route class="ui container app content"/>
+      <div data-is="route" class="ui container app content"/>
     </app>
 
     <!-- Main menu -->
     <main-menu class="ui teal inverted top fixed app menu">
       <div class="ui container">
         <a class={item: true, active: menu.url.substring(1) === riot.router.current.uri} href="{menu.url}" each={menu in this.leftMenus}><i class="{menu.icon} icon" if={menu.icon}></i>{menu.text}</a>
-        <div class="right menu" if={this.rightMenus.length}>
+        <div class="right menu" if={this.rightMenus && this.rightMenus.length}>
           <a class={item: true, active: menu.url.substring(1) === riot.router.current.uri} href="{menu.url}" each={menu in this.rightMenus}><i class="{menu.icon} icon" if={menu.icon}></i>{menu.text}</a>
         </div>
       </div>
@@ -105,6 +105,7 @@
 
       // On route update, update this fragment.
       riot.router.on('route:updated', function() {
+        console.log("router updated");
         this.createMenus();
         this.update();
       }.bind(this));
@@ -117,7 +118,7 @@
         <div class="{userId ? 'six' : 'sixteen'} wide column">
           <div class="ui top attached segment">
             <div class="ui fluid icon input  ">
-              <input name="search" onkeyup={this.filter} type="text" placeholder="Filter users..."/>
+              <input ref="search" onkeyup={this.filter} type="text" placeholder="Filter users..."/>
             </div>
           </div>
           <div class="ui attached segment">
@@ -145,7 +146,7 @@
       this.users = window.users.getUsers();
 
       filter() {
-        var keyword = this.search.value.toLowerCase();
+        var keyword = this.refs.search.value.toLowerCase();
         this.users = window.users.filter(function(user) {
           var target = user.name.toLowerCase() + user.id + user.email.toLowerCase();
           if (target.indexOf(keyword) > -1) {
@@ -174,7 +175,7 @@
         this.animate = opts.animate === "true";
         this.user = window.users.getUser(this.userId);
         if (this.user === null) {
-          riot.route('/not-found');
+          riot.router.navigateTo('/not-found');
         }
       }
       this.on('update', this.updateContent.bind(this));
@@ -215,6 +216,7 @@
     </not-found>
   </script>
   <script src="../node_modules/riot/riot+compiler.min.js"></script>
+  <script src="../node_modules/riot-route/dist/route.min.js"></script>
   <script src="../lib/router.js"></script>
 
   <!--

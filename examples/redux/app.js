@@ -185,8 +185,8 @@
       return {
         // ajax
         url: {
-          login: 'http://reqres.in/api/login',
-          list: 'http://reqres.in/api/users'
+          login: 'https://reqres.in/api/login',
+          list: 'https://reqres.in/api/users'
         },
         post: appFetch.bind(null, 'POST'),
         get: appFetch.bind(null, 'GET'),

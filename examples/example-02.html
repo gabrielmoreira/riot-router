@@ -28,6 +28,7 @@
 
     <!-- Riot -->
     <script src="../node_modules/riot/riot+compiler.min.js"></script>
+    <script src="../node_modules/riot-route/dist/route.min.js"></script>
     <script src="../lib/router.js"></script>
 
     <!--
@@ -49,7 +50,7 @@
 
         riot.router.routes([
           new Route({tag: 'hello'}),
-          new Route({tag: 'parameters'}),
+          new Route({tag: 'parameters', path: 'parameters/:id'}),
           new DefaultRoute({tag: 'home'}),
           new RedirectRoute({from: 'h', to: 'hello'}),
           new NotFoundRoute({tag: 'not-found'}),

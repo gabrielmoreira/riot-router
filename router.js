@@ -2,21 +2,6 @@ var riot = require('riot');
 var extend = require('extend');
 var error = console && console.error || function() {};
 
-function customRiotParser(path) {
-  var raw = path.split('?'),
-      uri = raw[0].split('/'),
-      query = raw[1],
-      params = {}
-  if (query) {
-    query.split('&').forEach(function(v) {
-      var c = v.split('=')
-      params[c[0]] = c[1]
-    })
-  }
-  uri.push(params)
-  return uri
-}
-
 class Router {
 
   constructor() {
@@ -86,7 +71,7 @@ class Router {
   }
 
   navigateTo(uri) {
-    riot.route(uri);
+    this.config.route(uri);
   }
 
   processInterceptors(context, preInterceptors, postInterceptors) {
@@ -109,14 +94,21 @@ class Router {
   }
 
   start() {
-    riot.route.parser(customRiotParser);
-    riot.route(this.process);
-    riot.route.start();
+    this.config.route.start();
     this.exec();
   }
 
   exec() {
-    riot.route.exec(this.process);
+    this.config.route.exec(this.process);
+  }
+
+  configure(options) {
+    this.config = extend(true, {}, riot.config, options);
+    if (this.config.route.parser && this.config.parser)
+      this.config.route.parser(this.config.parser);
+    if (this.config.route.base && this.config.base)
+      this.config.route.base(this.config.base);
+    this.config.route(this.process);
   }
 
 }
@@ -421,16 +413,39 @@ riot.tag('route', '<router-content></router-content>', function(opts) {
   }.bind(this));
 });
 
+function detectRoute() {
+  var route = riot.route
+    || (window && window.route)
+    || (global && global.route);
+  return route;
+}
+
 var router = new Router();
 router.Route = Route;
 router.DefaultRoute = DefaultRoute;
 router.RedirectRoute = RedirectRoute;
 router.NotFoundRoute = NotFoundRoute;
 router._ = {Response: Response, Request: Request};
+router.configure({
+  updatable: true,
+  route: detectRoute(),
+  base: '#',
+  parser: function customRiotParser(path) {
+    var raw = path.split('?'),
+        uri = raw[0].split('/'),
+        query = raw[1],
+        params = {}
+    if (query) {
+      query.split('&').forEach(function(v) {
+        var c = v.split('=')
+        params[c[0]] = c[1]
+      })
+    }
+    uri.push(params)
+    return uri
+  }
+});
 
-router.config = {
-  updatable: false
-}
 
 riot.router = router;
 

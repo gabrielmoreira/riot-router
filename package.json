@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "extend": "^3.0.0",
-    "riot": "^2.6.1"
+    "riot": "^3.0.5",
+    "riot-route": "^3.0.2"
   },
   "devDependencies": {
     "babel-core": "^6.14.0",

@@ -20,7 +20,6 @@ describe('riot.route', function() {
     var route = document.createElement('route');
     route.setAttribute('some-data', someData);
     document.body.appendChild(route);
-
     tag = riot.mount('route')[0];
     riot.router.routes([
       new Route({tag: 'static'}),
@@ -30,6 +29,7 @@ describe('riot.route', function() {
         return {tag: 'dynamic-api', api: {}};
       }})
     ]);
+    riot.router.start();
   });
 
   it('works with static tags', function() {
