@@ -1,10 +1,11 @@
 var riot = require('riot');
 var route = require('riot-route');
-console.log("INIT", route);
-riot.route = route;
-var router = require('../../router');
-riot.router.start();
+var Router = require('../../src/router');
+var router = Router.create({route: route});
+router.start();
+
 module.exports = {
   riot: riot,
-  router: riot.router
+  router: router,
+  Router: Router
 };

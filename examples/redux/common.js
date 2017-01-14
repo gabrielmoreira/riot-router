@@ -39,15 +39,17 @@ function CreateSimpleApp(config) {
         actions: context.actions
       });
     }
+    riot.util.tmpl.errorHandler = function (err) {
+      console.error("[WARN]", err.message + ' in ' + err.riotData.tagName) // your error logic here
+    }
     riot.mount('*');
     console.log("mounted");
     if (context.routes) {
       if (Object.prototype.toString.call(context.routes) === '[object Array]')
-        riot.router.routes(context.routes);
+        router.routes(context.routes);
       else
-        riot.router.route(context.routes);
-      riot.router.config.updatable = true;
-      riot.router.start();
+        router.route(context.routes);
+      router.start();
       console.log("route started");
     }
   }

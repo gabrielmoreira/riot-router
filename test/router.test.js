@@ -1,24 +1,26 @@
 var assert = require('assert'),
-    helper = require('./support/helper'),
-    riot = helper.riot;
+    helper = require('./support/helper');
+var riot = helper.riot,
+    router = helper.router,
+    Router = helper.Router;
 
-var Route = riot.router.Route;
-var NotFoundRoute = riot.router.NotFoundRoute;
-var DefaultRoute = riot.router.DefaultRoute;
-var Request = riot.router._.Request;
-var Response = riot.router._.Response;
+var Route = Router.Route;
+var NotFoundRoute = Router.NotFoundRoute;
+var DefaultRoute = Router.DefaultRoute;
+var Request = Router._.Request;
+var Response = Router._.Response;
 
 
-describe('riot.router', function() {
+describe('router', function() {
   it('can handle riot routes', function() {
-    riot.router.route(new Route({tag: 'user', path: '/user/:id'}));
-    riot.route('/user/123');
-    assert.equal(riot.router.current.matches[0].tag, 'user');
-    assert.equal(riot.router.current.uri, '/user/123');
+    router.route(new Route({tag: 'user', path: '/user/:id'}));
+    router.navigateTo('/user/123');
+    assert.equal(router.current.matches[0].tag, 'user');
+    assert.equal(router.current.uri, '/user/123');
   });
 });
 
-describe('riot.router.Route', function() {
+describe('router.Route', function() {
 
   it('can extract path parameters', function() {
     var route = new Route({tag: 'user', path: '/user/:id'});
@@ -72,7 +74,7 @@ describe('riot.router.Route', function() {
 
   it('can intercept & redirect route', function(done) {
     var userIsLogged = false;
-    riot.router.use(function(request, response, next) {
+    router.use(function(request, response, next) {
       try {
         return next();
       } finally {
@@ -80,21 +82,21 @@ describe('riot.router.Route', function() {
           response.redirectTo = '/redirected';
       }
     });
-    riot.router.exec();
-    riot.router.routes([
+    router.exec();
+    router.routes([
       new Route({tag: 'user', path: '/user/:id', secure: true}),
       new Route({tag: 'redirected'})
     ]);
-    riot.router.on('route:updated', function () {
+    router.on('route:updated', function () {
       try {
-        assert.equal('/redirected', riot.router.current.uri);
-        assert.equal('redirected', riot.router.current.get(1).tag);
+        assert.equal('/redirected', router.current.uri);
+        assert.equal('redirected', router.current.get(1).tag);
         done();
       } catch (e) {
         done(e);
       }
     });
-    riot.route('/user/123');
+    router.navigateTo('/user/123');
   });
 
   it('can extract multiple path parameters', function() {

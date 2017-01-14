@@ -28,8 +28,7 @@
 
     <!-- Riot -->
     <script src="../node_modules/riot/riot+compiler.min.js"></script>
-    <script src="../node_modules/riot-route/dist/route.min.js"></script>
-    <script src="../lib/router.js"></script>
+    <script src="../dist/router.js"></script>
 
     <!--
       Page initialization
@@ -43,12 +42,12 @@
 
         // My app routes
         var
-          Route = riot.router.Route,
-          DefaultRoute = riot.router.DefaultRoute,
-          NotFoundRoute = riot.router.NotFoundRoute,
-          RedirectRoute = riot.router.RedirectRoute;
+          Route = Router.Route,
+          DefaultRoute = Router.DefaultRoute,
+          NotFoundRoute = Router.NotFoundRoute,
+          RedirectRoute = Router.RedirectRoute;
 
-        riot.router.routes([
+        router.routes([
           new Route({tag: 'hello'}),
           new Route({tag: 'parameters', path: 'parameters/:id'}),
           new DefaultRoute({tag: 'home'}),
@@ -57,7 +56,7 @@
         ]);
 
         // Start routing
-        riot.router.start();
+        router.start();
       });
     </script>
   </body>
