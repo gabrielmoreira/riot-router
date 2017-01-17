@@ -4,6 +4,57 @@
 
 A routing library for Riot.
 
+Why
+---
+
+To make it easier to use Riot in SPA applications, I created this url routing library inspired by the React-Router API.
+
+How?
+----
+
+First you create your riot tags:
+
+```html
+<script type="riot/tag">
+  <user>
+    <div>Hello user {opts.id}</div>
+  </user>
+
+  <users>
+    <ul>
+      <li><a href="#/user/A">Open user A</a></li>
+      <li><a href="#/user/B">Open user B</a></li>
+    </ul>
+  </users>
+</script>
+```
+
+Then you add Riot and Riot-Router to your page:
+
+```html
+<script src="https://unpkg.com/riot@3.0.7/riot+compiler.min.js"></script>
+<script src="https://unpkg.com/riot-router@0.9.0/dist/router.min.js"></script>
+```
+
+And finally, you declare your routes and initialize your application:
+
+```html
+<script>
+router.routes([
+  new Router.Route({tag: 'user', path: '/user/:id'}),
+  new Router.Route({tag: 'users'}),
+  new Router.DefaultRoute({tag: 'app'})
+])
+riot.mount('*');
+router.start();
+</script>
+```
+
+Done!
+
+[Veja um exemplo no jsFiddle](https://jsfiddle.net/gabrielmoreira/ygc1xcs9/3/)
+
+
 Installation
 ------------
 
@@ -16,7 +67,7 @@ browserify, webpack, or similar, you can consume it like anything else
 installed from npm.
 
 See a demo
--------------
+----------
 
 [Application example](http://gabrielmoreira.github.io/riot-router/examples/example-01.html)
 
@@ -44,10 +95,5 @@ router.routes([
 ]);
 
 riot.mount('*');
-riot.router.start();
+router.start();
 ```
-
-Thanks, React-Router
---------------------
-
-This library is highly inspired by the React-Router routing API.
