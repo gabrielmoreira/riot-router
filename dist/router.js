@@ -1271,6 +1271,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }, config));
 	    registerTag(router);
+	    if (!Router.instance) Router.instance = router;
 	    return router;
 	  }
 	  Router.create = create;

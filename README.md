@@ -75,8 +75,8 @@ This library is written with CommonJS modules. If you are using
 browserify, webpack, or similar, you can consume it like anything else
 installed from npm.
 
-What's it look like?
---------------------
+Advanced examples
+-----------------
 
 ```js
 var Route = Router.Route, 

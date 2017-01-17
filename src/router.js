@@ -480,6 +480,7 @@ function create(config) {
     }
   }, config));
   registerTag(router);
+  if (!Router.instance) Router.instance = router;
   return router;
 }
 Router.create = create;
