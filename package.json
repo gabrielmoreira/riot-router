@@ -1,8 +1,8 @@
 {
   "name": "riot-router",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "A routing solution for Riot",
-  "main": "dist/router.min.js",
+  "main": "router.js",
   "directories": {
     "example": "examples",
     "test": "test"
@@ -76,6 +76,9 @@
   },
   "homepage": "https://github.com/gabrielmoreira/riot-router#readme",
   "files": [
-    "dist"
+    "dist",
+    "src",
+    "router.core.js",
+    "router.js"
   ]
 }
