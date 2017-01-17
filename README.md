@@ -24,12 +24,12 @@ What's it look like?
 --------------------
 
 ```js
-var Route = riot.router.Route, 
-    DefaultRoute = riot.router.DefaultRoute, 
-    NotFoundRoute = riot.router.NotFoundRoute, 
-    RedirectRoute = riot.router.RedirectRoute;
+var Route = Router.Route, 
+    DefaultRoute = Router.DefaultRoute, 
+    NotFoundRoute = Router.NotFoundRoute, 
+    RedirectRoute = Router.RedirectRoute;
 
-riot.router.routes([
+router.routes([
   new DefaultRoute({tag: 'home'}),
   new Route({tag: 'about'}),
   new Route({tag: 'users'}).routes([
