@@ -13,8 +13,7 @@ var Response = Router._.Response;
 riot.tag('need-data', '<span>{ opts.someData }</span>', function (opts) {
 });
 
-
-describe.skip('router.navigateTo (test is not working...)', function() {
+describe('router.navigateTo (test is not working...)', function() {
   var tag;
   var someData = 'the data i need';
 

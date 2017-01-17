@@ -1153,7 +1153,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }();
 	
 	  function registerTag(router) {
-	    riot.tag('route', '<router-content></router-content>', function (opts) {
+	    riot.tag('route', '<router-content></router-content>', '', '', function (opts) {
 	      this.calculateLevel = function (target) {
 	        var level = 0;
 	        if (target.parent) level += this.calculateLevel(target.parent);
@@ -1193,7 +1193,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.unmountTag();
 	          if (tag) {
 	            this.root.replaceChild(document.createElement(tag), this.root.children[0]);
-	            this.instance = riot.mount(this.root.children[0], tag, api)[0];
+	            try {
+	              this.instance = riot.mount(this.root.children[0], tag, api)[0];
+	            } catch (e) {
+	              error("Error when mounting tag '" + tag + "'.", e);
+	              return;
+	            }
 	            this.instanceTag = tag;
 	            this.instanceApi = api;
 	          }
@@ -1238,9 +1243,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        router.off('route:updated', this.updateRoute);
 	        this.unmountTag();
 	      }.bind(this));
-	      this.on('mount', function () {
-	        this.updateRoute();
-	      }.bind(this));
+	      this.on('mount', this.updateRoute);
 	    });
 	  }
 	

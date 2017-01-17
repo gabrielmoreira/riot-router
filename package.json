@@ -1,6 +1,6 @@
 {
   "name": "riot-router",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "A routing solution for Riot",
   "main": "dist/router.min.js",
   "directories": {
@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "extend": "^3.0.0",
-    "riot": "3.0.7",
+    "riot": "^3.0.7",
     "riot-route": "^3.0.2"
   },
   "devDependencies": {
