@@ -61,7 +61,7 @@ router.start();
 
 Done!
 
-[See an example on jsFiddle](https://jsfiddle.net/gabrielmoreira/ygc1xcs9/3/)
+[See a sample](https://jsbin.com/tihuki)
 
 
 Installation
