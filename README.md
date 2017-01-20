@@ -62,7 +62,7 @@ router.start();
 Done!
 
 [See a sample](https://jsbin.com/tihuki)
-
+[See a todo sample with Redux](https://jsbin.com/jujobe) 
 
 Installation
 ------------
