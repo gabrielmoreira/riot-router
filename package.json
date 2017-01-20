@@ -1,6 +1,6 @@
 {
   "name": "riot-router",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "A routing solution for Riot",
   "main": "router.js",
   "directories": {
@@ -65,9 +65,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gabrielmoreira/riot-router.git"
-  },
-  "engines": {
-    "node": "~4.1.1"
   },
   "author": "Gabriel Moreira",
   "license": "MIT",
