@@ -88,6 +88,7 @@ var Route = Router.Route,
 router.routes([
   new DefaultRoute({tag: 'home'}),
   new Route({tag: 'about'}),
+  new Route({tag: 'login'}),
   new Route({tag: 'users'}).routes([
      new Route({path:'top', tag: 'users-home', api: {text: 'Select a top user'}}),
      new Route({path: '/user/:userId', tag: 'user'}),
@@ -98,6 +99,18 @@ router.routes([
   new RedirectRoute({from: 'company', to: 'about'}),
   new RedirectRoute({from: 'u', to: 'users/user'})
 ]);
+
+// Redirect unlogged users to /login page
+function securityFilter(request, response, next) {
+  try {
+    return next();
+  } finally {
+    if (!window.loggedUser && request.uri !== '/login') {
+      response.redirectTo = '/login';
+    }
+  }
+}
+router.use(securityFilter);
 
 riot.mount('*');
 router.start();
