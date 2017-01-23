@@ -71,8 +71,12 @@ class Router {
     this.navigateTo(uri);
   }
 
-  navigateTo(uri) {
-    this.config.route(uri);
+  navigateTo() {
+    var args = Array.prototype.slice.call(arguments);
+    if (typeof(args[1]) === 'boolean') {
+      args.splice(1, 0, '');
+    }
+    this.config.route.apply(null, args);
   }
 
   processInterceptors(context, preInterceptors, postInterceptors) {
