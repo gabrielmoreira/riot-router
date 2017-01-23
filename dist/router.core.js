@@ -292,8 +292,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }, {
 	      key: 'navigateTo',
-	      value: function navigateTo(uri) {
-	        this.config.route(uri);
+	      value: function navigateTo() {
+	        var args = Array.prototype.slice.call(arguments);
+	        if (typeof args[1] === 'boolean') {
+	          args.splice(1, 0, '');
+	        }
+	        this.config.route.apply(null, args);
 	      }
 	    }, {
 	      key: 'processInterceptors',
