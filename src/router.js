@@ -76,7 +76,7 @@ class Router {
     if (typeof(args[1]) === 'boolean') {
       args.splice(1, 0, '');
     }
-    this.config.route(null, args);
+    this.config.route.apply(null, args);
   }
 
   processInterceptors(context, preInterceptors, postInterceptors) {
