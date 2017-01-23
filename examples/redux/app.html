@@ -5,10 +5,10 @@
 
       <form class="uk-panel uk-panel-box uk-form" onSubmit={login}>
         <div class="uk-form-row">
-          <input class="uk-width-1-1 uk-form-large" type="text" placeholder="Email" name=email>
+          <input class="uk-width-1-1 uk-form-large" type="text" placeholder="Email" ref="email">
         </div>
         <div class="uk-form-row">
-          <input class="uk-width-1-1 uk-form-large" type="password" placeholder="Password" name=password>
+          <input class="uk-width-1-1 uk-form-large" type="password" placeholder="Password" ref="password">
         </div>
         <div class="uk-form-row">
           <button class="uk-width-1-1 uk-button uk-button-primary uk-button-large">Login</button>
@@ -22,7 +22,7 @@
   </div>
   <script>
     login() {
-      this.actions.user.loginWithEmail(this.email.value, this.password.value);
+      this.actions.user.loginWithEmail(this.refs.email.value, this.refs.password.value);
     }
   </script>
 </login>
@@ -31,7 +31,7 @@
   <div class='uk-position-cover uk-container uk-margin-large-top' if={notifications.length}>
     <div class="uk-alert uk-alert-{notification.type}" each={notification in notifications}>{notification.message}<a class="uk-alert-close uk-close" onClick={autoDismiss(notification)}></a></div>
   </div>
-  <div riot-tag='login' if={!logged} class='uk-height-1-1'></div>
+  <div data-is='login' if={!logged} class='uk-height-1-1'></div>
   <div if={logged} class='uk-height-1-1'>
     <nav class="uk-navbar">
       <a class="uk-navbar-brand uk-hidden-small">Hello, {email}</a>
@@ -48,7 +48,7 @@
       </ul>
     </nav>
     <div class={'uk-height-1-1': true, 'uk-overlay': loading} style='width: 100%'>
-      <div riot-tag='route' class='uk-height-1-1 uk-margin-small-top'></div>
+      <div data-is='route' class='uk-height-1-1 uk-margin-small-top'></div>
       <div if={loading} class={"uk-overlay-panel uk-overlay-background uk-height-1-1 uk-text-center": loading}>
         <i class="uk-icon-spinner uk-icon-spin uk-icon-large uk-container-center"></i>
       </div>
@@ -56,7 +56,7 @@
   </div>
   <script>
     isActive(url) {
-      return riot.router.current.uri === url;
+      return router.current.uri === url;
     }
 
     autoDismiss(notification) {
@@ -109,6 +109,7 @@
     </tbody>
   </table>
   <script>
+    this.users = [];
     this.bindState({
       'users': 'users.users'
     });
@@ -121,16 +122,12 @@
     <h3 class='uk-text-capitalize'>{user.first_name}</h3>
     <img class="uk-border-circle" riot-src={user.avatar} alt="">
   </div>
-
+  this.user = {};
   initialize() {
     this.actions.user.load(opts.userId);
     this.bindState({
       'user': 'users.usersById[' + opts.userId + ']'
     });
   }
-
-  this.on('update', function(newOpts) {
-    _.merge(opts, newOpts);
-    this.initialize();
-  }.bind(this));
+  this.on('mount', this.initialize);
 </user>

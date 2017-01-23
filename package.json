@@ -1,15 +1,15 @@
 {
   "name": "riot-router",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "description": "A routing solution for Riot",
-  "main": "lib/router.min.js",
+  "main": "dist/router.min.js",
   "directories": {
     "example": "examples",
     "test": "test"
   },
   "dependencies": {
     "extend": "^3.0.0",
-    "riot": "^3.0.5",
+    "riot": "3.0.7",
     "riot-route": "^3.0.2"
   },
   "devDependencies": {
@@ -36,24 +36,24 @@
     "babel-plugin-transform-es2015-unicode-regex": "^6.11.0",
     "babel-plugin-transform-regenerator": "^6.14.0",
     "babel-preset-es2015": "^6.14.0",
-    "imports-loader": "^0.6.5",
+    "imports-loader": "^0.7.0",
     "karma": "^1.2.0",
     "karma-mocha": "^1.1.1",
     "karma-mocha-reporter": "^2.1.0",
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-sourcemap-loader": "^0.3.7",
-    "karma-webpack": "^1.8.0",
+    "karma-webpack": "^2.0.1",
     "mocha": "^3.0.2",
-    "node-libs-browser": "^0.5.2",
-    "phantomjs": "^1.9.19",
+    "node-libs-browser": "^2.0.0",
+    "phantomjs": "^2.1.7",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.15.1"
   },
   "scripts": {
     "test": "node_modules/.bin/karma start --single-run",
     "test:watch": "node_modules/.bin/karma start --auto-watch",
-    "watch": "webpack --watch router.js lib/router.js",
-    "build": "webpack --devtool source-maps router.js lib/router.js && COMPRESS=1 webpack --devtool source-maps router.js lib/router.min.js",
+    "watch": "webpack --watch",
+    "build": "COMPRESS=1 webpack",
     "start": "webpack-dev-server",
     "prepublish": "npm run build && npm test"
   },
@@ -71,10 +71,6 @@
   },
   "homepage": "https://github.com/gabrielmoreira/riot-router#readme",
   "files": [
-    "lib/router.js",
-    "lib/router.min.js",
-    "lib/router.js.map",
-    "lib/router.js.min.map",
-    "LICENSE"
+    "dist"
   ]
 }

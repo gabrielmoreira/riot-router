@@ -1,9 +1,9 @@
 <app>
-  <span>Current riot.router.current.uri = '{riot.router.current.uri}'</span>
+  <span>Current router.current.uri = '{router.current.uri}'</span>
   <menu></menu>
   <route></route>
 
-  riot.router.on('route:updated', function() {
+  router.on('route:updated', function() {
     this.update();
   }.bind(this));
 </app>
@@ -19,7 +19,7 @@
 </menu>
 
 <not-found>
-  <span>Page '{ riot.router.current.uri }' not found!</span>
+  <span>Page '{ router.current.uri }' not found!</span>
 </not-found>
 
 <home>
@@ -30,6 +30,6 @@
   <div>id={opts.id}</div>
   <div>a={opts.a}</div>
   <div>b={opts.b}</div>
-  <pre style='width: 80%'>riot.router.current={JSON.stringify(riot.router.current, null, 2)}</pre>
+  <pre style='width: 80%'>router.current={JSON.stringify(router.current, null, 2)}</pre>
 </parameters>
 

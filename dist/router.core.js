@@ -44,7 +44,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.c = installedModules;
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "/dist/";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
@@ -54,9 +54,39 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== "undefined") {
+	    factory(module, require('./src/router.js'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod, global.router);
+	    global.routerCore = mod.exports;
+	  }
+	})(this, function (module, Router) {
+	  'use strict';
+	
+	  module.exports = Router;
+	});
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
+
+/***/ },
+/* 2 */,
+/* 3 */,
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(1), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(1), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(module, require('riot'), require('extend'));
 	  } else {
@@ -186,7 +216,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function Router() {
 	      _classCallCheck(this, Router);
 	
-	      riot.router = this;
 	      riot.observable(this);
 	      this.interceptors = [this.processRoute.bind(this)];
 	      this.handler = new InitialRoute();
@@ -302,7 +331,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	      key: 'configure',
 	      value: function configure(options) {
-	        this.config = extend(true, {}, riot.config, options);
+	        this.config = extend(true, {}, this.config, options);
 	        if (this.config.route.parser && this.config.parser) this.config.route.parser(this.config.parser);
 	        if (this.config.route.base && this.config.base) this.config.route.base(this.config.base);
 	        this.config.route(this.process);
@@ -438,7 +467,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	              params[name] = decodeURIComponent(matcher[parseInt(i, 10) + 1]);
 	            }
 	          }
-	          return { route: this, tag: this.tag, api: this.api, found: matcher[0], params: params };
+	          return {
+	            route: this,
+	            tag: this.tag,
+	            api: this.api,
+	            found: matcher[0],
+	            params: params
+	          };
 	        }
 	        return false;
 	      }
@@ -503,7 +538,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _createClass(NotFoundRoute, [{
 	      key: 'matches',
 	      value: function matches(request) {
-	        return { route: this, tag: this.tag, api: this.api, found: request.uri };
+	        return {
+	          route: this,
+	          tag: this.tag,
+	          api: this.api,
+	          found: request.uri
+	        };
 	      }
 	    }]);
 	
@@ -559,7 +599,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      key: 'matches',
 	      value: function matches(request) {
 	        var uri = request.uri.trim();
-	        if (uri === "/" || uri === "") return { route: this, tag: this.tag, api: this.api, found: uri };
+	        if (uri === "/" || uri === "") return {
+	          route: this,
+	          tag: this.tag,
+	          api: this.api,
+	          found: uri
+	        };
 	      }
 	    }]);
 	
@@ -616,132 +661,142 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return Response;
 	  }();
 	
-	  riot.tag('route', '<router-content></router-content>', function (opts) {
-	    this.calculateLevel = function (target) {
-	      var level = 0;
-	      if (target.parent) level += this.calculateLevel(target.parent);
-	      if (target.opts.__router_level) level += target.opts.__router_level;
-	      if (target.__router_tag) level += 1;
-	      return level;
-	    }.bind(this);
+	  function registerTag(router) {
+	    riot.tag('route', '<router-content></router-content>', function (opts) {
+	      this.calculateLevel = function (target) {
+	        var level = 0;
+	        if (target.parent) level += this.calculateLevel(target.parent);
+	        if (target.opts.__router_level) level += target.opts.__router_level;
+	        if (target.__router_tag) level += 1;
+	        return level;
+	      }.bind(this);
 	
-	    this.normalizeTag = function (tag, api, options) {
-	      var result = tag(api, options);
-	      if (typeof result === 'string') {
-	        tag = result;
-	      } else {
-	        tag = result.tag || tag;
-	        api = result.api || api;
-	      }
-	      return [tag, api, options];
-	    };
-	
-	    this.unmountTag = function () {
-	      if (this.instance) this.instance.unmount(true);
-	    };
-	
-	    this.mountTag = function (tag, api, options) {
-	      if (typeof tag === 'function') {
-	        var _normalizeTag = this.normalizeTag(tag, api, options);
-	
-	        var _normalizeTag2 = _slicedToArray(_normalizeTag, 3);
-	
-	        tag = _normalizeTag2[0];
-	        api = _normalizeTag2[1];
-	        options = _normalizeTag2[2];
-	      }
-	      if (this.canUpdate(tag, api, options)) {
-	        this.instance.update(api);
-	      } else {
-	        this.unmountTag();
-	        if (tag) {
-	          this.root.replaceChild(document.createElement(tag), this.root.children[0]);
-	          this.instance = riot.mount(this.root.children[0], tag, api)[0];
-	          this.instanceTag = tag;
-	          this.instanceApi = api;
+	      this.normalizeTag = function (tag, api, options) {
+	        var result = tag(api, options);
+	        if (typeof result === 'string') {
+	          tag = result;
+	        } else {
+	          tag = result.tag || tag;
+	          api = result.api || api;
 	        }
-	      }
-	    };
+	        return [tag, api, options];
+	      };
 	
-	    this.canUpdate = function (tag, api, options) {
-	      if (!riot.router.config.updatable && !opts.updatable && !options.updatable || !this.instance || !this.instance.isMounted || this.instanceTag !== tag) return false;
-	      return true;
-	    };
+	      this.unmountTag = function () {
+	        if (this.instance) this.instance.unmount(true);
+	      };
 	
-	    this.updateRoute = function () {
-	      var mount = { tag: null };
-	      if (riot.router && riot.router.current) {
-	        var response = riot.router.current;
-	        if (this.level <= response.size()) {
-	          var matcher = response.get(this.level);
-	          if (matcher) {
-	            var params = matcher.params || {};
-	            var query = response.query || {};
-	            var api = extend(true, {}, opts, query, matcher.api, params, { __router_level: this.level, query: query });
-	            mount = { tag: matcher.tag, api: api, updatable: matcher.route.updatable };
+	      this.mountTag = function (tag, api, options) {
+	        if (typeof tag === 'function') {
+	          var _normalizeTag = this.normalizeTag(tag, api, options);
+	
+	          var _normalizeTag2 = _slicedToArray(_normalizeTag, 3);
+	
+	          tag = _normalizeTag2[0];
+	          api = _normalizeTag2[1];
+	          options = _normalizeTag2[2];
+	        }
+	        if (this.canUpdate(tag, api, options)) {
+	          this.instance.update(api);
+	        } else {
+	          this.unmountTag();
+	          if (tag) {
+	            this.root.replaceChild(document.createElement(tag), this.root.children[0]);
+	            this.instance = riot.mount(this.root.children[0], tag, api)[0];
+	            this.instanceTag = tag;
+	            this.instanceApi = api;
 	          }
 	        }
-	      }
-	      if (mount.tag) this.mountTag(mount.tag, mount.api, mount);else this.unmountTag();
-	    }.bind(this);
+	      };
 	
-	    this.__router_tag = 'route';
-	    this.level = this.calculateLevel(this);
-	    riot.router.on('route:updated', this.updateRoute);
-	    this.on('unmount', function () {
-	      riot.router.off('route:updated', this.updateRoute);
-	      this.unmountTag();
-	    }.bind(this));
-	    this.on('mount', function () {
-	      this.updateRoute();
-	    }.bind(this));
-	  });
+	      this.canUpdate = function (tag, api, options) {
+	        if (!router.config.updatable && !opts.updatable && !options.updatable || !this.instance || !this.instance.isMounted || this.instanceTag !== tag) return false;
+	        return true;
+	      };
+	
+	      this.updateRoute = function () {
+	        var mount = {
+	          tag: null
+	        };
+	        if (router && router.current) {
+	          var response = router.current;
+	          if (this.level <= response.size()) {
+	            var matcher = response.get(this.level);
+	            if (matcher) {
+	              var params = matcher.params || {};
+	              var query = response.query || {};
+	              var api = extend(true, {}, opts, query, matcher.api, params, {
+	                __router_level: this.level,
+	                query: query
+	              });
+	              mount = {
+	                tag: matcher.tag,
+	                api: api,
+	                updatable: matcher.route.updatable
+	              };
+	            }
+	          }
+	        }
+	        if (mount.tag) this.mountTag(mount.tag, mount.api, mount);else this.unmountTag();
+	      }.bind(this);
+	
+	      this.__router_tag = 'route';
+	      this.level = this.calculateLevel(this);
+	      router.on('route:updated', this.updateRoute);
+	      this.on('unmount', function () {
+	        router.off('route:updated', this.updateRoute);
+	        this.unmountTag();
+	      }.bind(this));
+	      this.on('mount', function () {
+	        this.updateRoute();
+	      }.bind(this));
+	    });
+	  }
 	
 	  function detectRoute() {
 	    var route = riot.route || window && window.route || global && global.route;
 	    return route;
 	  }
 	
-	  var router = new Router();
-	  router.Route = Route;
-	  router.DefaultRoute = DefaultRoute;
-	  router.RedirectRoute = RedirectRoute;
-	  router.NotFoundRoute = NotFoundRoute;
-	  router._ = { Response: Response, Request: Request };
-	  router.configure({
-	    updatable: false,
-	    route: detectRoute(),
-	    base: '#',
-	    parser: function customRiotParser(path) {
-	      var raw = path.split('?'),
-	          uri = raw[0].split('/'),
-	          query = raw[1],
-	          params = {};
-	      if (query) {
-	        query.split('&').forEach(function (v) {
-	          var c = v.split('=');
-	          params[c[0]] = c[1];
-	        });
+	  function create(config) {
+	    var router = new Router();
+	    router.configure(extend(true, {
+	      updatable: true,
+	      route: detectRoute(),
+	      base: '#',
+	      parser: function customRiotParser(path) {
+	        var raw = path.split('?'),
+	            uri = raw[0].split('/'),
+	            query = raw[1],
+	            params = {};
+	        if (query) {
+	          query.split('&').forEach(function (v) {
+	            var c = v.split('=');
+	            params[c[0]] = c[1];
+	          });
+	        }
+	        uri.push(params);
+	        return uri;
 	      }
-	      uri.push(params);
-	      return uri;
-	    }
-	  });
-	
-	  riot.router = router;
-	
-	  module.exports = router;
+	    }, config));
+	    registerTag(router);
+	    return router;
+	  }
+	  Router.create = create;
+	  Router.Route = Route;
+	  Router.DefaultRoute = DefaultRoute;
+	  Router.RedirectRoute = RedirectRoute;
+	  Router.NotFoundRoute = NotFoundRoute;
+	  Router._ = {
+	    Response: Response,
+	    Request: Request
+	  };
+	  module.exports = Router;
 	});
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 1 */
-/***/ function(module, exports) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
-
-/***/ },
-/* 2 */
+/* 5 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -836,4 +891,4 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
-//# sourceMappingURL=router.js.map
+//# sourceMappingURL=router.core.js.map

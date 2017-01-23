@@ -137,9 +137,9 @@
       }
     },
     routes: function(context) {
-      var Route = riot.router.Route,
-        RedirectRoute = riot.router.RedirectRoute,
-        DefaultRoute = riot.router.DefaultRoute;
+      var Route = Router.Route,
+        RedirectRoute = Router.RedirectRoute,
+        DefaultRoute = Router.DefaultRoute;
       return [
         new Route({tag: 'app'}).routes([
           new Route({tag: 'users'}),
@@ -209,22 +209,25 @@
   app.on('USER__LOGIN_SUCCESS USER__LOGOUT', function() {
     var state = app.getState();
     if (state.user.logged) {
-      localStorage.setItem('user', JSON.stringify(state.user));
+      try {
+        localStorage.setItem('user', JSON.stringify(state.user));
+      } catch (e) {};
+
     } else {
       localStorage.removeItem('user');
     }
-    riot.route('#/app');
+    router.navigateTo('/app');
   });
 
-  riot.router.on('route:updated', function() {
-    app.dispatch('ROUTER__URL', {url: riot.router.current.uri});
+  router.on('route:updated', function() {
+    app.dispatch('ROUTER__URL', {url: router.current.uri});
   });
 
   app.store.subscribe(function() {
     var state = app.getState();
     if (state.router.url !== null 
-      && state.router.url !== riot.router.current.uri) {
-      riot.route(state.router.url);
+      && state.router.url !== router.current.uri) {
+      router.navigateTo(state.router.url);
     }
   });
   
