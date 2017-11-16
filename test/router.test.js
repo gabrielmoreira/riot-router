@@ -87,8 +87,66 @@ describe('router.Route', function() {
       new Route({tag: 'user', path: '/user/:id', secure: true}),
       new Route({tag: 'redirected'})
     ]);
+
+    // spy on calls to route()
+    var _route = router.config.route;
+    var routeCalls = [];
+    router.config.route = function () {
+      var args = Array.prototype.slice.apply(arguments);
+      routeCalls.push(args);
+      return _route.apply(null, args);
+    };
+
     router.on('route:updated', function () {
+      // restore route()
+      router.config.route = _route;
       try {
+        assert.equal(routeCalls.length, 2);
+        assert.deepEqual(routeCalls[0], ['/user/123']);
+        assert.deepEqual(routeCalls[1], ['/redirected', '', false]);
+        assert.equal('/redirected', router.current.uri);
+        assert.equal('redirected', router.current.get(1).tag);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+    router.navigateTo('/user/123');
+  });
+
+  it('can redirect with shouldReplace', function(done) {
+    var userIsLogged = false;
+    router.use(function(request, response, next) {
+      try {
+        return next();
+      } finally {
+        if (request.uri != '/redirected')
+          response.redirectTo = '/redirected';
+          response.shouldReplace = true;
+      }
+    });
+    router.exec();
+    router.routes([
+      new Route({tag: 'user', path: '/user/:id', secure: true}),
+      new Route({tag: 'redirected'})
+    ]);
+
+    // spy on calls to route()
+    var _route = router.config.route;
+    var routeCalls = [];
+    router.config.route = function () {
+      var args = Array.prototype.slice.apply(arguments);
+      routeCalls.push(args);
+      return _route.apply(null, args);
+    };
+
+    router.on('route:updated', function () {
+      // restore route()
+      router.config.route = _route;
+      try {
+        assert.equal(routeCalls.length, 2);
+        assert.deepEqual(routeCalls[0], ['/user/123']);
+        assert.deepEqual(routeCalls[1], ['/redirected', '', true]);
         assert.equal('/redirected', router.current.uri);
         assert.equal('redirected', router.current.get(1).tag);
         done();
@@ -112,4 +170,3 @@ describe('router.Route', function() {
     assert.equal(matcher.params.name, 'Gabriel');
   });
 });
-
