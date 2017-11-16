@@ -67,8 +67,9 @@ class Router {
 
   processRedirect(context) {
     var uri = context.response.redirectTo;
+    var shouldReplace = Boolean(context.response.shouldReplace);
     this.rootContext.addRedirect(uri);
-    this.navigateTo(uri);
+    this.navigateTo(uri, shouldReplace);
   }
 
   navigateTo() {
