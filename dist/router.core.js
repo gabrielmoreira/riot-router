@@ -52,7 +52,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
@@ -72,17 +72,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  module.exports = Router;
 	});
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 
-/***/ },
+/***/ }),
 /* 2 */,
 /* 3 */,
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {(function (global, factory) {
 	  if (true) {
@@ -700,8 +700,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          api = _normalizeTag2[1];
 	          options = _normalizeTag2[2];
 	        }
+	        console.log('tag, api, options', tag, api, options);
 	        if (this.canUpdate(tag, api, options)) {
-	          this.instance.update(api);
+	          console.log('UPDATE UPDATE!!!');
+	          this.instance.update({ opts: api });
 	        } else {
 	          this.unmountTag();
 	          if (tag) {
@@ -719,6 +721,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 	
 	      this.canUpdate = function (tag, api, options) {
+	        if (options.updatable === false) return false;
 	        if (!router.config.updatable && !opts.updatable && !options.updatable || !this.instance || !this.instance.isMounted || this.instanceTag !== tag) return false;
 	        return true;
 	      };
@@ -803,14 +806,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 	
 	var hasOwn = Object.prototype.hasOwnProperty;
 	var toStr = Object.prototype.toString;
+	var defineProperty = Object.defineProperty;
+	var gOPD = Object.getOwnPropertyDescriptor;
 	
 	var isArray = function isArray(arr) {
 		if (typeof Array.isArray === 'function') {
@@ -835,17 +840,46 @@ return /******/ (function(modules) { // webpackBootstrap
 		// Own properties are enumerated firstly, so to speed up,
 		// if last one is own, then all properties are own.
 		var key;
-		for (key in obj) {/**/}
+		for (key in obj) { /**/ }
 	
 		return typeof key === 'undefined' || hasOwn.call(obj, key);
 	};
 	
+	// If name is '__proto__', and Object.defineProperty is available, define __proto__ as an own property on target
+	var setProperty = function setProperty(target, options) {
+		if (defineProperty && options.name === '__proto__') {
+			defineProperty(target, options.name, {
+				enumerable: true,
+				configurable: true,
+				value: options.newValue,
+				writable: true
+			});
+		} else {
+			target[options.name] = options.newValue;
+		}
+	};
+	
+	// Return undefined instead of __proto__ if '__proto__' is not an own property
+	var getProperty = function getProperty(obj, name) {
+		if (name === '__proto__') {
+			if (!hasOwn.call(obj, name)) {
+				return void 0;
+			} else if (gOPD) {
+				// In early versions of node, obj['__proto__'] is buggy when obj has
+				// __proto__ as an own property. Object.getOwnPropertyDescriptor() works.
+				return gOPD(obj, name).value;
+			}
+		}
+	
+		return obj[name];
+	};
+	
 	module.exports = function extend() {
-		var options, name, src, copy, copyIsArray, clone,
-			target = arguments[0],
-			i = 1,
-			length = arguments.length,
-			deep = false;
+		var options, name, src, copy, copyIsArray, clone;
+		var target = arguments[0];
+		var i = 1;
+		var length = arguments.length;
+		var deep = false;
 	
 		// Handle a deep copy situation
 		if (typeof target === 'boolean') {
@@ -853,7 +887,8 @@ return /******/ (function(modules) { // webpackBootstrap
 			target = arguments[1] || {};
 			// skip the boolean and the target
 			i = 2;
-		} else if ((typeof target !== 'object' && typeof target !== 'function') || target == null) {
+		}
+		if (target == null || (typeof target !== 'object' && typeof target !== 'function')) {
 			target = {};
 		}
 	
@@ -863,8 +898,8 @@ return /******/ (function(modules) { // webpackBootstrap
 			if (options != null) {
 				// Extend the base object
 				for (name in options) {
-					src = target[name];
-					copy = options[name];
+					src = getProperty(target, name);
+					copy = getProperty(options, name);
 	
 					// Prevent never-ending loop
 					if (target !== copy) {
@@ -878,11 +913,11 @@ return /******/ (function(modules) { // webpackBootstrap
 							}
 	
 							// Never move original objects, clone them
-							target[name] = extend(deep, clone, copy);
+							setProperty(target, { name: name, newValue: extend(deep, clone, copy) });
 	
 						// Don't bring in undefined values
 						} else if (typeof copy !== 'undefined') {
-							target[name] = copy;
+							setProperty(target, { name: name, newValue: copy });
 						}
 					}
 				}
@@ -892,10 +927,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		// Return the modified object
 		return target;
 	};
-	
 
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;

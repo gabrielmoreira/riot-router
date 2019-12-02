@@ -391,8 +391,10 @@ function registerTag(router) {
       if (typeof tag === 'function') {
         [tag, api, options] = this.normalizeTag(tag, api, options);
       }
+      console.log('tag, api, options', tag, api, options);
       if (this.canUpdate(tag, api, options)) {
-        this.instance.update(api);
+        console.log('UPDATE UPDATE!!!');
+        this.instance.update({ opts: api });
       } else {
         this.unmountTag();
         if (tag) {
@@ -410,6 +412,7 @@ function registerTag(router) {
     }
 
     this.canUpdate = function (tag, api, options) {
+      if (options.updatable === false) return false;
       if ((!router.config.updatable && !opts.updatable && !options.updatable) ||
         !this.instance ||
         !this.instance.isMounted ||

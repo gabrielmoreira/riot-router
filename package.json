@@ -1,6 +1,6 @@
 {
   "name": "riot-router",
-  "version": "0.9.7",
+  "version": "0.10.0",
   "description": "A routing solution for Riot",
   "main": "dist/router.min.js",
   "directories": {

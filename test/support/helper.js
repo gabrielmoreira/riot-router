@@ -7,5 +7,6 @@ router.start();
 module.exports = {
   riot: riot,
   router: router,
-  Router: Router
+  Router: Router,
+  route: route,
 };
