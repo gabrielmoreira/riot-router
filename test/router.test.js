@@ -18,6 +18,15 @@ describe('router', function() {
     assert.equal(router.current.matches[0].tag, 'user');
     assert.equal(router.current.uri, '/user/123');
   });
+
+  it('.updatable prop is `true` by default', function () {
+    assert.equal(router.config.updatable, true);
+  });
+
+  it('.updatable prop can be reassigned during initialization', function () {
+    var newRouter = Router.create({route: helper.route, updatable: 'YES'});
+    assert.equal(newRouter.config.updatable, 'YES');
+  });
 });
 
 describe('router.Route', function() {

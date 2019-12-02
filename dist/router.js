@@ -52,7 +52,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	    if (true) {
@@ -76,15 +76,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    module.exports = Router;
 	});
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -97,32 +97,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @module riot-route
 	 */
 	
-	var RE_ORIGIN = /^.+?\/\/+[^\/]+/;
-	var EVENT_LISTENER = 'EventListener';
-	var REMOVE_EVENT_LISTENER = 'remove' + EVENT_LISTENER;
-	var ADD_EVENT_LISTENER = 'add' + EVENT_LISTENER;
-	var HAS_ATTRIBUTE = 'hasAttribute';
-	var POPSTATE = 'popstate';
-	var HASHCHANGE = 'hashchange';
-	var TRIGGER = 'trigger';
-	var MAX_EMIT_STACK_LEVEL = 3;
-	var win = typeof window != 'undefined' && window;
-	var doc = typeof document != 'undefined' && document;
-	var hist = win && history;
-	var loc = win && (hist.location || win.location);
-	var prot = Router.prototype;
-	var clickEvent = doc && doc.ontouchstart ? 'touchstart' : 'click';
-	var central = observable();
+	var RE_ORIGIN = /^.+?\/\/+[^/]+/,
+	  EVENT_LISTENER = 'EventListener',
+	  REMOVE_EVENT_LISTENER = 'remove' + EVENT_LISTENER,
+	  ADD_EVENT_LISTENER = 'add' + EVENT_LISTENER,
+	  HAS_ATTRIBUTE = 'hasAttribute',
+	  POPSTATE = 'popstate',
+	  HASHCHANGE = 'hashchange',
+	  TRIGGER = 'trigger',
+	  MAX_EMIT_STACK_LEVEL = 3,
+	  win = typeof window != 'undefined' && window,
+	  doc = typeof document != 'undefined' && document,
+	  hist = win && history,
+	  loc = win && (hist.location || win.location), // see html5-history-api
+	  prot = Router.prototype, // to minify more
+	  clickEvent = doc && doc.ontouchstart ? 'touchstart' : 'click',
+	  central = observable();
 	
-	var started = false;
-	var routeFound = false;
-	var debouncedEmit;
-	var base;
-	var current;
-	var parser;
-	var secondParser;
-	var emitStack = [];
-	var emitStackLevel = 0;
+	var
+	  started = false,
+	  routeFound = false,
+	  debouncedEmit,
+	  current,
+	  parser,
+	  secondParser,
+	  emitStack = [],
+	  emitStackLevel = 0;
 	
 	/**
 	 * Default parser. You can replace it via router.parser method.
@@ -173,6 +173,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  win[ADD_EVENT_LISTENER](POPSTATE, debouncedEmit);
 	  win[ADD_EVENT_LISTENER](HASHCHANGE, debouncedEmit);
 	  doc[ADD_EVENT_LISTENER](clickEvent, click);
+	
 	  if (autoExec) { emit(true); }
 	}
 	
@@ -209,6 +210,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {string} path from base
 	 */
 	function getPathFromBase(href) {
+	  var base = route._.base;
 	  return base[0] === '#'
 	    ? (href || loc.href || '').split(base)[1] || ''
 	    : (loc ? getPathFromRoot(href) : href || '').replace(base, '')
@@ -227,6 +229,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      current = path;
 	    }
 	  });
+	
 	  if (isRoot) {
 	    var first;
 	    while (first = emitStack.shift()) { first(); } // stack increses within this call
@@ -252,6 +255,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    || el.href.indexOf(loc.href.match(RE_ORIGIN)[0]) === -1 // cross origin
 	  ) { return }
 	
+	  var base = route._.base;
+	
 	  if (el.href !== loc.href
 	    && (
 	      el.href.split('#')[0] === loc.href.split('#')[0] // internal jump
@@ -274,7 +279,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // Server-side usage: directly execute handlers for the path
 	  if (!hist) { return central[TRIGGER]('emit', getPathFromBase(path)) }
 	
-	  path = base + normalize(path);
+	  path = route._.base + normalize(path);
 	  title = title || doc.title;
 	  // browsers ignores the second parameter `title`
 	  shouldReplace
@@ -336,11 +341,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    filter = '/' + normalize(filter);
 	    this.$.push(filter);
 	  }
+	
 	  this.on(filter, action);
 	};
 	
 	var mainRouter = new Router();
 	var route = mainRouter.m.bind(mainRouter);
+	
+	// adding base and getPathFromBase to route so we can access them in route.tag's script
+	route._ = { base: null, getPathFromBase: getPathFromBase };
 	
 	/**
 	 * Create a sub router
@@ -360,7 +369,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {(str|RegExp)} arg - a new base or '#' or '#!'
 	 */
 	route.base = function(arg) {
-	  base = arg || '#';
+	  route._.base = arg || '#';
 	  current = getPathFromBase(); // recalculate current path
 	};
 	
@@ -403,6 +412,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      win[REMOVE_EVENT_LISTENER](HASHCHANGE, debouncedEmit);
 	      doc[REMOVE_EVENT_LISTENER](clickEvent, click);
 	    }
+	
 	    central[TRIGGER]('stop');
 	    started = false;
 	  }
@@ -415,13 +425,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	route.start = function (autoExec) {
 	  if (!started) {
 	    if (win) {
-	      if (document.readyState === 'complete') { start(autoExec); }
-	      // the timeout is needed to solve
-	      // a weird safari bug https://github.com/riot/route/issues/33
-	      else { win[ADD_EVENT_LISTENER]('load', function() {
-	        setTimeout(function() { start(autoExec); }, 1);
-	      }); }
+	      if (document.readyState === 'interactive' || document.readyState === 'complete') {
+	        start(autoExec);
+	      } else {
+	        document.onreadystatechange = function () {
+	          if (document.readyState === 'interactive') {
+	            // the timeout is needed to solve
+	            // a weird safari bug https://github.com/riot/route/issues/33
+	            setTimeout(function() { start(autoExec); }, 1);
+	          }
+	        };
+	      }
 	    }
+	
 	    started = true;
 	  }
 	};
@@ -433,9 +449,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = route;
 
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	;(function(window, undefined) {var observable = function(el) {
 	
@@ -571,9 +587,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	})(typeof window != 'undefined' ? window : undefined);
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {(function (global, factory) {
 	  if (true) {
@@ -1191,8 +1207,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          api = _normalizeTag2[1];
 	          options = _normalizeTag2[2];
 	        }
+	        console.log('tag, api, options', tag, api, options);
 	        if (this.canUpdate(tag, api, options)) {
-	          this.instance.update(api);
+	          console.log('UPDATE UPDATE!!!');
+	          this.instance.update({ opts: api });
 	        } else {
 	          this.unmountTag();
 	          if (tag) {
@@ -1210,6 +1228,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 	
 	      this.canUpdate = function (tag, api, options) {
+	        if (options.updatable === false) return false;
 	        if (!router.config.updatable && !opts.updatable && !options.updatable || !this.instance || !this.instance.isMounted || this.instanceTag !== tag) return false;
 	        return true;
 	      };
@@ -1294,14 +1313,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 	
 	var hasOwn = Object.prototype.hasOwnProperty;
 	var toStr = Object.prototype.toString;
+	var defineProperty = Object.defineProperty;
+	var gOPD = Object.getOwnPropertyDescriptor;
 	
 	var isArray = function isArray(arr) {
 		if (typeof Array.isArray === 'function') {
@@ -1326,17 +1347,46 @@ return /******/ (function(modules) { // webpackBootstrap
 		// Own properties are enumerated firstly, so to speed up,
 		// if last one is own, then all properties are own.
 		var key;
-		for (key in obj) {/**/}
+		for (key in obj) { /**/ }
 	
 		return typeof key === 'undefined' || hasOwn.call(obj, key);
 	};
 	
+	// If name is '__proto__', and Object.defineProperty is available, define __proto__ as an own property on target
+	var setProperty = function setProperty(target, options) {
+		if (defineProperty && options.name === '__proto__') {
+			defineProperty(target, options.name, {
+				enumerable: true,
+				configurable: true,
+				value: options.newValue,
+				writable: true
+			});
+		} else {
+			target[options.name] = options.newValue;
+		}
+	};
+	
+	// Return undefined instead of __proto__ if '__proto__' is not an own property
+	var getProperty = function getProperty(obj, name) {
+		if (name === '__proto__') {
+			if (!hasOwn.call(obj, name)) {
+				return void 0;
+			} else if (gOPD) {
+				// In early versions of node, obj['__proto__'] is buggy when obj has
+				// __proto__ as an own property. Object.getOwnPropertyDescriptor() works.
+				return gOPD(obj, name).value;
+			}
+		}
+	
+		return obj[name];
+	};
+	
 	module.exports = function extend() {
-		var options, name, src, copy, copyIsArray, clone,
-			target = arguments[0],
-			i = 1,
-			length = arguments.length,
-			deep = false;
+		var options, name, src, copy, copyIsArray, clone;
+		var target = arguments[0];
+		var i = 1;
+		var length = arguments.length;
+		var deep = false;
 	
 		// Handle a deep copy situation
 		if (typeof target === 'boolean') {
@@ -1344,7 +1394,8 @@ return /******/ (function(modules) { // webpackBootstrap
 			target = arguments[1] || {};
 			// skip the boolean and the target
 			i = 2;
-		} else if ((typeof target !== 'object' && typeof target !== 'function') || target == null) {
+		}
+		if (target == null || (typeof target !== 'object' && typeof target !== 'function')) {
 			target = {};
 		}
 	
@@ -1354,8 +1405,8 @@ return /******/ (function(modules) { // webpackBootstrap
 			if (options != null) {
 				// Extend the base object
 				for (name in options) {
-					src = target[name];
-					copy = options[name];
+					src = getProperty(target, name);
+					copy = getProperty(options, name);
 	
 					// Prevent never-ending loop
 					if (target !== copy) {
@@ -1369,11 +1420,11 @@ return /******/ (function(modules) { // webpackBootstrap
 							}
 	
 							// Never move original objects, clone them
-							target[name] = extend(deep, clone, copy);
+							setProperty(target, { name: name, newValue: extend(deep, clone, copy) });
 	
 						// Don't bring in undefined values
 						} else if (typeof copy !== 'undefined') {
-							target[name] = copy;
+							setProperty(target, { name: name, newValue: copy });
 						}
 					}
 				}
@@ -1383,10 +1434,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		// Return the modified object
 		return target;
 	};
-	
 
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;
